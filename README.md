@@ -4,4 +4,4 @@ Mục đích của trang web - mua bán thú cưng và các sản phẩm liên q
 1. Cài đặt các package cần thiết:
 `npm i`
 2. Chạy project
-`npm run dev'
+`npm run dev`
