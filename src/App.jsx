@@ -6,6 +6,9 @@ import {
 } from "react-router-dom";
 import RootLayout from "./layouts/RootLayout";
 import HomePage from "./pages/HomePage";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+
 // router and routes
 const router = createBrowserRouter(
    createRoutesFromElements(
@@ -13,6 +16,10 @@ const router = createBrowserRouter(
          <Route index element={<HomePage />} />
          <Route path="create" element={<div>create</div>} />
          <Route path="profile" element={<div>Profile</div>} />
+         <Route path="login" element={<LoginPage/>} />
+         <Route path="register" element={<RegisterPage/>} />
+         {/* <Route index element={<LoginPage />} /> */}
+
       </Route>
    )
 );
