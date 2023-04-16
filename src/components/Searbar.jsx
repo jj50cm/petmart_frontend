@@ -19,19 +19,20 @@ const Searbar = () => {
    return (
       <HStack>
          <Input
-            borderColor={"gray.400"}
-            borderRadius={"xl"}
-            width={"100%"}
+            bgColor={"gray.50"}
+            borderRadius={"md"}
+            width={"80%"}
             type="text"
             placeholder="Nhập tên thú nuôi"
+            border={"none"}
             onChange={(e) => setSearchVal(e.target.value)}
          ></Input>
-         <IconButton
+         {/* <IconButton
             colorScheme="blue"
             aria-label="Search database"
             icon={<SearchIcon />}
             onClick={handleSearch}
-         />
+         /> */}
          {/* <Button colorScheme="teal">Tìm kiếm</Button> */}
       </HStack>
    );

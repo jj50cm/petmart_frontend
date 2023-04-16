@@ -2,11 +2,6 @@ import { Box, Heading, Image, Button, Text } from "@chakra-ui/react";
 import React from "react";
 
 const Hero = () => {
-   const heroContainerStyle = {
-      position: "absolute",
-      top: "30%",
-      left: "10%",
-   };
    return (
       <Box
          height={"100%"}
