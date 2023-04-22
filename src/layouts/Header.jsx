@@ -14,6 +14,7 @@ import { AiOutlineShoppingCart } from "react-icons/ai";
 import { BiHeart } from "react-icons/bi";
 import Account from "../components/Account";
 import { Link } from "react-router-dom";
+import Searbar from "../components/Searbar";
 
 const Header = () => {
    const hoverStyle = {
@@ -37,9 +38,7 @@ const Header = () => {
                      <Image src={"./images/logo-petshop.jpg"} />
                   </Link>
                </Box>
-               {/* <Box flexBasis={"35%"}>
-                  <Searbar />
-               </Box> */}
+
                <Spacer />
                <Flex
                   flexBasis={"30%"}
