@@ -40,7 +40,8 @@ function RegisterPage() {
             .required("Vui lòng nhập Họ tên"),
         idNumber: Yup
             .string()
-            .required("Vui lòng nhập Số CCCD"),
+            .required("Vui lòng nhập Số CCCD")
+            .min(12, "Số CCCD cần có 12 chữ số"),
         address: Yup
             .string()
             .required("Vui lòng nhập Địa chỉ thường trú"),
