@@ -5,7 +5,7 @@ import Products from "../layouts/Products";
 
 const HomePage = () => {
    return (
-      <Box as="main" height={"calc(100vh - 84px)"}>
+      <Box as="main">
          <Hero />
          <Products />
       </Box>

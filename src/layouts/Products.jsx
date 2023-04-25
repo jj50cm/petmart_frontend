@@ -5,7 +5,7 @@ import ProductList from "../components/Products/ProductList";
 
 const Products = () => {
    return (
-      <Box pt={"26px"} px={"12"}>
+      <Box pt={"26px"} px={"12"} h={"100%"}>
          <Heading
             as={"h3"}
             textAlign={"center"}

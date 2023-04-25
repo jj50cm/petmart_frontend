@@ -45,14 +45,7 @@ const FilterProducts = () => {
    const colors = ["yellow", "black", "pink"];
 
    return (
-      <Box
-         position={"sticky"}
-         top={"0"}
-         zIndex={"1"}
-         flexBasis={"20%"}
-         mr={"10px"}
-         mb={{ sm: "10px" }}
-      >
+      <Box flexBasis={"20%"} mr={"10px"} mb={{ sm: "10px" }}>
          <Flex flexDirection={"column"} gap={"16px"}>
             <Box>
                <Searbar />
