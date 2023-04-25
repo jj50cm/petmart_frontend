@@ -28,17 +28,17 @@ const Footer = () => {
                   md: "repeat(3, 1fr)",
                   lg: "repeat(4, 1fr)",
                }}
-               columnGap={"20px"}
+               gap={"20px"}
             >
                <GridItem>
-                  <Heading as={"h4"} fontSize={"18px"} mb="6px">
+                  <Heading as={"h4"} fontSize={"18px"} mb="8px">
                      Thông tin liên hệ
                   </Heading>
                   <Text>Tel : 098.8888.182</Text>
                   <Text>Email : support@phongtot.vn</Text>
                </GridItem>
                <GridItem>
-                  <Heading as={"h4"} fontSize={"18px"} mb="6px">
+                  <Heading as={"h4"} fontSize={"18px"} mb="8px">
                      Hỗ trợ
                   </Heading>
                   <Flex flexDirection={"column"} columnGap={"8px"}>
@@ -48,7 +48,7 @@ const Footer = () => {
                   </Flex>
                </GridItem>
                <GridItem>
-                  <Heading as={"h4"} fontSize={"18px"} mb="6px">
+                  <Heading as={"h4"} fontSize={"18px"} mb="8px">
                      Về chúng tôi
                   </Heading>
                   <Text>
