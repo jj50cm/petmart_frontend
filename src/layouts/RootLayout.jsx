@@ -5,6 +5,7 @@ import { Box, Flex } from "@chakra-ui/react";
 import Footer from "./Footer";
 
 const RootLayout = () => {
+   console.log(import.meta.env.VITE_BASE_URL);
    return (
       <Flex
          flexDirection={"column"}
