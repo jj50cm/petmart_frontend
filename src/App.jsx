@@ -8,13 +8,15 @@ import RootLayout from "./layouts/RootLayout";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import CreateProductPage from "./pages/CreateProductPage";
 
 // router and routes
 const router = createBrowserRouter(
    createRoutesFromElements(
       <Route path="/" element={<RootLayout />}>
          <Route index element={<HomePage />} />
-         <Route path="create" element={<div>create</div>} />
+         {/* <Route path="create" element={<div>create</div>} /> */}
+         <Route path="create" element={<CreateProductPage/>} />
          <Route path="profile" element={<div>Profile</div>} />
          <Route path="login" element={<LoginPage/>} />
          <Route path="register" element={<RegisterPage/>} />

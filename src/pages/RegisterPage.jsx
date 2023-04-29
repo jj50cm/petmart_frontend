@@ -12,7 +12,10 @@ import {
     Box,
     Flex,
     FormErrorMessage,
-    Text
+    Text,
+    RadioGroup,
+    HStack,
+    Radio
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { Field, Form, Formik } from "formik";
@@ -35,13 +38,14 @@ function RegisterPage() {
 
     // validate form
     const validationSchema = Yup.object().shape({
-        fullName: Yup
+        username: Yup
             .string()
             .required("Vui lòng nhập Họ tên"),
-        idNumber: Yup
+        citizen: Yup
             .string()
             .required("Vui lòng nhập Số Căn Cước Công Dân")
-            .min(12, "Số Căn Cước Công Dân cần có 12 chữ số"),
+            .min(12, "Số Căn Cước Công Dân cần có 12 chữ số")
+            .test("is number", "Vui lòng chỉ nhập số", (value) => !isNaN(parseInt(value))),
         address: Yup
             .string()
             .required("Vui lòng nhập Địa chỉ thường trú"),
@@ -50,6 +54,10 @@ function RegisterPage() {
             .required("Vui lòng nhập Số điện thoại")
             .matches(/^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[0-6|8|9]|9[0-4|6-9])[0-9]{7}$/,
                 "Số điện thoại không hợp lệ"),
+        role: Yup
+            .string()
+            .required("Vui lòng chọn vai trò")
+            .oneOf(['buyer', 'seller'], 'Vui lòng chọn vai trò người bán hoặc mua'),
         email: Yup
             .string()
             .required("Vui lòng nhập Email")
@@ -82,55 +90,56 @@ function RegisterPage() {
                 </Heading>
                 <Formik
                     initialValues={{
-                        fullName: "",
-                        idNumber: "",
+                        username: "",
+                        citizen: "",
                         address: "",
                         phone: "",
+                        role: "",
                         email: "",
                         password: "",
                         repassword: "",
 
                     }}
-                    onSubmit={ async (values) => {
+                    onSubmit={async (values) => {
                         console.log(values)
                         try {
-                          const response = await axios.post("", values);
-                          console.log(response);
+                            const response = await axios.post("", values);
+                            console.log(response);
                         } catch (error) {
-                          console.log(error);
+                            console.log(error);
                         }
                     }}
                     validationSchema={validationSchema}
                 >
                     {(props) => (
                         <Form>
-                            <Field name='fullName'>
+                            <Field name='username'>
                                 {({ field, form }) => (
                                     <FormControl
                                         isRequired
-                                        isInvalid={form.errors.fullName && form.touched.fullName}
+                                        isInvalid={form.errors.username && form.touched.username}
                                         mb={"4"}
                                     >
                                         <FormLabel>Họ tên</FormLabel>
                                         <Input
                                             {...field}
                                         />
-                                        <FormErrorMessage>{form.errors.fullName}</FormErrorMessage>
+                                        <FormErrorMessage>{form.errors.username}</FormErrorMessage>
                                     </FormControl>
                                 )}
                             </Field>
-                            <Field name='idNumber'>
+                            <Field name='citizen'>
                                 {({ field, form }) => (
                                     <FormControl
                                         isRequired
-                                        isInvalid={form.errors.idNumber && form.touched.idNumber}
+                                        isInvalid={form.errors.citizen && form.touched.citizen}
                                         mb={"4"}
                                     >
                                         <FormLabel>Số Căn Cước Công Dân</FormLabel>
                                         <Input
                                             {...field}
                                         />
-                                        <FormErrorMessage>{form.errors.idNumber}</FormErrorMessage>
+                                        <FormErrorMessage>{form.errors.citizen}</FormErrorMessage>
                                     </FormControl>
                                 )}
                             </Field>
@@ -161,6 +170,28 @@ function RegisterPage() {
                                             {...field}
                                         />
                                         <FormErrorMessage>{form.errors.phone}</FormErrorMessage>
+                                    </FormControl>
+                                )}
+                            </Field>
+                            <Field name='role'>
+                                {({ field, form }) => (
+                                    <FormControl
+                                        isRequired
+                                        isInvalid={form.errors.role && form.touched.role}
+                                        mb={"4"}
+                                    >
+                                        <FormLabel>Bạn là</FormLabel>
+                                        <RadioGroup
+                                            {...field}
+                                           onChange={(value) => form.setValues({...form.values, role: value})}
+                                           
+                                        >
+                                            <HStack spacing={"100px"}>
+                                                <Radio value="buyer">Người mua</Radio>
+                                                <Radio value="seller">Người bán</Radio>
+                                            </HStack>
+                                        </RadioGroup>
+                                        <FormErrorMessage>{form.errors.role}</FormErrorMessage>
                                     </FormControl>
                                 )}
                             </Field>
