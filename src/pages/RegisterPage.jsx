@@ -40,8 +40,8 @@ function RegisterPage() {
             .required("Vui lòng nhập Họ tên"),
         idNumber: Yup
             .string()
-            .required("Vui lòng nhập Số CCCD")
-            .min(12, "Số CCCD cần có 12 chữ số"),
+            .required("Vui lòng nhập Số Căn Cước Công Dân")
+            .min(12, "Số Căn Cước Công Dân cần có 12 chữ số"),
         address: Yup
             .string()
             .required("Vui lòng nhập Địa chỉ thường trú"),
@@ -126,7 +126,7 @@ function RegisterPage() {
                                         isInvalid={form.errors.idNumber && form.touched.idNumber}
                                         mb={"4"}
                                     >
-                                        <FormLabel>Số CCCD</FormLabel>
+                                        <FormLabel>Số Căn Cước Công Dân</FormLabel>
                                         <Input
                                             {...field}
                                         />
