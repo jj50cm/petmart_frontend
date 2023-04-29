@@ -1,9 +1,9 @@
 import { Box, Container, Flex, Heading } from "@chakra-ui/react";
 import React from "react";
-import FilterProducts from "../components/Products/FilterProducts";
-import ProductList from "../components/Products/ProductList";
+import FilterPosts from "../components/Posts/FilterPosts";
+import PostList from "../components/Posts/PostList";
 
-const Products = () => {
+const Posts = () => {
    return (
       <Box pt={"26px"} px={"12"} h={"100%"}>
          <Heading
@@ -13,7 +13,7 @@ const Products = () => {
             mb={"34px"}
             fontStyle={"italic"}
          >
-            Danh sách thú cưng
+            Danh sách bài đăng
          </Heading>
 
          <Flex
@@ -25,11 +25,11 @@ const Products = () => {
                xl: "row",
             }}
          >
-            <FilterProducts />
-            <ProductList />
+            <FilterPosts />
+            <PostList />
          </Flex>
       </Box>
    );
 };
 
-export default Products;
+export default Posts;

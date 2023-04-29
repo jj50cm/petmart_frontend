@@ -1,6 +1,5 @@
 import axios from "axios";
-import { setError, setLoading, userLogin } from "../slices/user";
-// import { API_URL } from "../../constants";
+import { setError, setLoading, userLogin, userLogout } from "../slices/user";
 
 export const login = (email, password) => async (dispatch) => {
    dispatch(setLoading(true));
@@ -11,12 +10,13 @@ export const login = (email, password) => async (dispatch) => {
          },
       };
       const { data } = await axios.post(
-         `${API_URL}/api/users/login`,
+         `${import.meta.env.VITE_BASE_URL}/api/users/login`,
          { email, password },
          config
       );
 
       dispatch(userLogin(data));
+      console.log("đăng nhập");
       localStorage.setItem("userInfo", JSON.stringify(data));
    } catch (error) {
       dispatch(
@@ -29,4 +29,8 @@ export const login = (email, password) => async (dispatch) => {
          )
       );
    }
+};
+export const logout = () => async (dispatch) => {
+   localStorage.removeItem("userInfo");
+   dispatch(userLogout());
 };

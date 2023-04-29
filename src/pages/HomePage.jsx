@@ -1,13 +1,13 @@
 import React from "react";
 import Hero from "../layouts/Hero";
 import { Box } from "@chakra-ui/react";
-import Products from "../layouts/Products";
+import Posts from "../layouts/Posts";
 
 const HomePage = () => {
    return (
       <Box as="main">
          <Hero />
-         <Products />
+         <Posts />
       </Box>
    );
 };

@@ -15,7 +15,7 @@ import Searbar from "../Searbar";
 import FilterForm from "../FilterForm";
 import ColorBox from "../ColorBox";
 
-const FilterProducts = () => {
+const FilterPosts = () => {
    const filterCategory = [
       {
          name: "Địa chỉ",
@@ -76,4 +76,4 @@ const FilterProducts = () => {
    );
 };
 
-export default FilterProducts;
+export default FilterPosts;

@@ -18,19 +18,18 @@ import React from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { CiLocationOn } from "react-icons/ci";
 import RatingSystem from "../Rating/RatingSystem";
+import { Link as ReactLink } from "react-router-dom";
+import numberWithCommas from "../../utils/numberWithCommas";
 
-function ProductItem({ item }) {
+function SinglePost({ item }) {
    const { id, img, category, address, name, rating, author, gender, price } =
       item;
    // console.log(item);
-   const numberWithCommas = (num) => {
-      return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-   };
 
    return (
       <Card maxW="xs">
          <CardBody>
-            <Link>
+            <Link as={ReactLink} to={`/products/${id}`}>
                <Image
                   height={"200px"}
                   width={"100%"}
@@ -61,7 +60,9 @@ function ProductItem({ item }) {
                   color: "green.500",
                }}
             >
-               {name}
+               <Link as={ReactLink} to={`/products/${id}`}>
+                  {name}
+               </Link>
             </Heading>
             <HStack color={"gray.500"}>
                <Text>By</Text>
@@ -109,4 +110,4 @@ function ProductItem({ item }) {
    );
 }
 
-export default ProductItem;
+export default SinglePost;
