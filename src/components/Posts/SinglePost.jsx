@@ -20,6 +20,7 @@ import { CiLocationOn } from "react-icons/ci";
 import RatingSystem from "../Rating/RatingSystem";
 import { Link as ReactLink } from "react-router-dom";
 import numberWithCommas from "../../utils/numberWithCommas";
+import { ViewIcon } from "@chakra-ui/icons";
 
 function SinglePost({ item }) {
    const { id, img, category, address, name, rating, author, gender, price } =
@@ -92,7 +93,7 @@ function SinglePost({ item }) {
                {numberWithCommas(price)}
             </Text>
             <Button
-               leftIcon={<Icon as={AiOutlineShoppingCart} boxSize={5}></Icon>}
+               leftIcon={<Icon as={ViewIcon} boxSize={4}></Icon>}
                bgColor={"green.100"}
                color={"green.400"}
                variant="outline"
@@ -103,7 +104,7 @@ function SinglePost({ item }) {
                   transform: "translateY(-2px)",
                }}
             >
-               Add
+               Xem
             </Button>
          </CardFooter>
       </Card>

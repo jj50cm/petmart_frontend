@@ -30,6 +30,36 @@ export const login = (email, password) => async (dispatch) => {
       );
    }
 };
+
+export const signup = (newUser) => async (dispatch) => {
+   dispatch(setLoading(true));
+   try {
+      const config = {
+         headers: {
+            "Content-Type": "application/json",
+         },
+      };
+      const { data } = await axios.post(
+         `${import.meta.env.VITE_BASE_URL}/api/users/register`,
+         newUser,
+         config
+      );
+
+      dispatch(userLogin(data));
+      console.log("đăng ký");
+   } catch (error) {
+      dispatch(
+         setError(
+            error.response && error.response.data.message
+               ? error.response.data.message
+               : error.message
+               ? error.message
+               : "An unexpected error has occured. Please try again later."
+         )
+      );
+   }
+};
+
 export const logout = () => async (dispatch) => {
    localStorage.removeItem("userInfo");
    dispatch(userLogout());

@@ -52,6 +52,14 @@ const LoginPage = () => {
    const handleLogin = (values) => {
       const { email, password } = values;
       dispatch(login(email, password));
+      if (error) {
+         toast({
+            description: error,
+            status: "error",
+            isClosable: true,
+            position: "top",
+         });
+      }
    };
 
    useEffect(() => {
@@ -61,7 +69,7 @@ const LoginPage = () => {
          if (location.state?.from) {
             navigate(location.state.from);
          } else {
-            // Điều hướng tới trang products
+            // Điều hướng tới trang chủ
             navigate(redirect);
          }
          toast({

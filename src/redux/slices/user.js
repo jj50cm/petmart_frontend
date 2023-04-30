@@ -18,6 +18,11 @@ export const userSlice = createSlice({
          state.error = null;
          state.loading = false;
       },
+      userSignup: (state, { payload }) => {
+         state.userInfo = payload;
+         state.error = null;
+         state.loading = false;
+      },
       userLogout: (state) => {
          state.loading = false;
          state.error = null;
@@ -30,7 +35,7 @@ export const userSlice = createSlice({
    },
 });
 
-export const { setLoading, setError, userLogin, userLogout } =
+export const { setLoading, setError, userLogin, userLogout, userSignup } =
    userSlice.actions;
 
 export default userSlice.reducer;
