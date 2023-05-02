@@ -53,7 +53,7 @@ const FilterPosts = () => {
             {filterCategory.map((category, index) => {
                return <FilterForm key={index} category={category} />;
             })}
-            <Box>
+            {/* <Box>
                <Text fontSize={"md"} fontWeight={"medium"} mb={"6px"}>
                   Màu sắc
                </Text>
@@ -70,7 +70,7 @@ const FilterPosts = () => {
                         })}
                   </Flex>
                </Flex>
-            </Box>
+            </Box> */}
          </Flex>
       </Box>
    );

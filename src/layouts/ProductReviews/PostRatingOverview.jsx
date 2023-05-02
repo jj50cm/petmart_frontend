@@ -4,13 +4,13 @@ import RatingIcon from "../../components/Rating/RatingIcon";
 import RatingSystem from "../../components/Rating/RatingSystem";
 let initialRatingSelections = [
    { id: 0, text: "Tất cả", isActive: true },
-   { id: 1, text: "1 Sao", numRating: 2, isActive: false },
-   { id: 2, text: "2 Sao", numRating: 4, isActive: false },
-   { id: 3, text: "3 Sao", numRating: 3, isActive: false },
+   { id: 5, text: "5 Sao", numRating: 4, isActive: false },
    { id: 4, text: "4 Sao", numRating: 1, isActive: false },
-   { id: 5, text: "5 Sao", numRating: 40, isActive: false },
+   { id: 3, text: "3 Sao", numRating: 3, isActive: false },
+   { id: 2, text: "2 Sao", numRating: 4, isActive: false },
+   { id: 1, text: "1 Sao", numRating: 2, isActive: false },
 ];
-const ProductRatingOverview = () => {
+const PostRatingOverview = () => {
    const [ratingSelections, setRatingSelections] = useState(
       initialRatingSelections
    );
@@ -20,7 +20,7 @@ const ProductRatingOverview = () => {
       borderColor: "#ee4d2d",
    };
    const handleClick = (id) => {
-      console.log("click");
+      console.log(`click ${id}`);
       setRatingSelections((prev) => {
          return prev.map((item) =>
             item.id === id
@@ -31,17 +31,23 @@ const ProductRatingOverview = () => {
    };
    return (
       <Flex
-         gap={5}
+         gap={8}
          padding={"24px"}
          bgColor={"pink.50"}
          border={"1px solid #f9ede5"}
       >
-         <Stack>
-            <Text> 4.5 trên 5</Text>
+         <Stack pl={"12px"}>
+            <Text fontWeight={"600"} fontSize={"20px"} color={"#ee4d2d"}>
+               {" "}
+               <Text as={"span"} fontSize={"26px"}>
+                  4
+               </Text>{" "}
+               trên 5
+            </Text>
             <RatingSystem rating={3.5} />
             {/* filled={"#ee4d2d"} size={6} */}
          </Stack>
-         <HStack>
+         <Flex flexWrap={"wrap"} gap={4}>
             {ratingSelections.map((rating) => {
                return (
                   <Button
@@ -57,9 +63,9 @@ const ProductRatingOverview = () => {
                   </Button>
                );
             })}
-         </HStack>
+         </Flex>
       </Flex>
    );
 };
 
-export default ProductRatingOverview;
+export default PostRatingOverview;

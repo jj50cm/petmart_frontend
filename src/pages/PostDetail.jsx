@@ -18,23 +18,25 @@ import { SiSourceforge } from "react-icons/si";
 import { AiOutlineEye } from "react-icons/ai";
 import { TfiRulerAlt } from "react-icons/tfi";
 import { Link as ReactLink, useParams } from "react-router-dom";
-import ShowImages from "../components/ProductDetail/ShowImages.jsx";
-import SubTitle from "../components/ProductDetail/SubTitle.jsx";
+import SubTitle from "../components/PostDetail/SubTitle.jsx";
 import RatingSystem from "../components/Rating/RatingSystem.jsx";
 import { listItem } from "../data.js";
-import ProductReviews from "../layouts/ProductReviews/ProductReviews.jsx";
+import PostReviews from "../layouts/ProductReviews/PostReviews.jsx";
 import numberWithCommas from "../utils/numberWithCommas.js";
+import PostImages from "../components/PostDetail/PostImages.jsx";
+import { useDispatch, useSelector } from "react-redux";
+import PostInformation from "../layouts/ProductReviews/PostInformation.jsx";
 
 const PostDetail = () => {
    const { id } = useParams();
    const [pet, setPet] = useState(
       listItem.find((item) => parseInt(id) === item.id)
    );
+   const { userInfo } = useSelector((state) => state.user);
 
    const { img, category, address, name, rating, author, gender, price } = pet;
    const views = 10;
    const numOfcomment = 4;
-   const image = "./images/husky.jpg";
 
    useEffect(() => {
       // call api get single product
@@ -42,11 +44,13 @@ const PostDetail = () => {
    }, []);
    return (
       <Box width={"80%"} mx={"auto"} padding={8} my={"32px"}>
-         <Flex justifyContent={"flex-end"} mb={"20px"}>
-            <Button>Thêm vào danh sách yêu thích</Button>
-         </Flex>
-         <Flex gap={6}>
-            <ShowImages />
+         {userInfo && (
+            <Flex justifyContent={"flex-end"} mb={"20px"}>
+               <Button>Thêm vào danh sách yêu thích</Button>
+            </Flex>
+         )}
+         <Flex gap={8}>
+            <PostImages />
             <Box width={"48%"}>
                <Heading fontSize={"26px"} color={"#453227"}>
                   {name}
@@ -126,41 +130,8 @@ const PostDetail = () => {
                </HStack>
             </Box>
          </Flex>
-         <Box my={"32px"}>
-            <SubTitle>Thông tin chi tiết</SubTitle>
-            <SimpleGrid columns={2} spacing={4}>
-               <Text>
-                  <Icon as={TfiRulerAlt} /> Kích thước: lớn
-               </Text>
-               <Text>
-                  <Icon as={SiSourceforge} mr={"4px"} />
-                  Giống thú cưng: Pitbull
-               </Text>
-               <Text>
-                  <Icon as={BsShieldPlus} mr={"4px"} />
-                  Tiêm phòng: có
-               </Text>
-               <Text>
-                  <Icon as={MdPets} mr={"4px"} />
-                  Độ tuổi: 6 tháng
-               </Text>
-            </SimpleGrid>
-            <SubTitle>Đặc điểm nổi bật</SubTitle>
-            <Text maxW={"90%"}>
-               Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui
-               temporibus, tempora impedit recusandae eveniet consectetur
-               possimus laborum officia ipsa, vero, aut quo ipsum? Quibusdam
-               reprehenderit laboriosam aliquam sapiente commodi facere! Lorem
-               ipsum dolor sit amet consectetur adipisicing elit. Placeat
-               delectus optio quos id eligendi numquam commodi, quam quas
-               doloremque dolorem?
-            </Text>
-            <Flex mt={"12px"} gap={3}>
-               <Text fontWeight={"bold"}>Địa chỉ:</Text>
-               <Text>Xuân Thủy Cầu giấy {address}</Text>
-            </Flex>
-         </Box>
-         <ProductReviews />
+         <PostInformation />
+         <PostReviews />
       </Box>
    );
 };

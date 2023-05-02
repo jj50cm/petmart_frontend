@@ -1,5 +1,11 @@
 import axios from "axios";
-import { setError, setLoading, userLogin, userLogout } from "../slices/user";
+import {
+   setError,
+   setLoading,
+   userLogin,
+   userLogout,
+   userSignup,
+} from "../slices/user";
 
 export const login = (email, password) => async (dispatch) => {
    dispatch(setLoading(true));
@@ -19,6 +25,7 @@ export const login = (email, password) => async (dispatch) => {
       console.log("đăng nhập");
       localStorage.setItem("userInfo", JSON.stringify(data));
    } catch (error) {
+      console.log("Lỗi khi đăng nhập");
       dispatch(
          setError(
             error.response && error.response.data.message
@@ -45,7 +52,7 @@ export const signup = (newUser) => async (dispatch) => {
          config
       );
 
-      dispatch(userLogin(data));
+      dispatch(userSignup(data));
       console.log("đăng ký");
    } catch (error) {
       dispatch(

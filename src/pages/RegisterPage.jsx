@@ -17,6 +17,10 @@ import {
    HStack,
    Radio,
    useToast,
+   Alert,
+   AlertIcon,
+   AlertTitle,
+   AlertDescription,
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { Field, Form, Formik } from "formik";
@@ -48,16 +52,6 @@ function RegisterPage() {
 
    const handleSignup = (values) => {
       dispatch(signup(values));
-      if (error) {
-         toast({
-            description: error,
-            status: "error",
-            isClosable: true,
-            position: "top",
-         });
-      } else {
-         navigate(redirectToLogin);
-      }
    };
 
    useEffect(() => {
@@ -100,7 +94,7 @@ function RegisterPage() {
       email: Yup.string().required("Vui lòng nhập Email").email(),
       password: Yup.string()
          .required("Vui lòng nhập Mật khẩu")
-         .min(8, "Mật khẩu phải có ít nhất 8 ký tự"),
+         .min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
       repassword: Yup.string()
          .required("Vui lòng nhập Xác nhận mật khẩu")
          .oneOf([Yup.ref("password"), null], "Mật khẩu không khớp"),
@@ -135,6 +129,18 @@ function RegisterPage() {
             >
                {(props) => (
                   <Form>
+                     {error && (
+                        <Alert
+                           status="error"
+                           flexDirection="column"
+                           alignItems="center"
+                           justifyContent="center"
+                           textAlign="center"
+                        >
+                           <AlertIcon />
+                           <AlertTitle>{error}</AlertTitle>
+                        </Alert>
+                     )}
                      <Field name="username">
                         {({ field, form }) => (
                            <FormControl
@@ -327,11 +333,13 @@ function RegisterPage() {
                      </Field>
 
                      <Button
+                        isLoading={loading}
                         type="submit"
                         mt={4}
                         colorScheme="blue"
                         bg="#f5897e"
                         _hover={{ bg: "#f56051" }}
+                        loadingText="Đăng ký"
                      >
                         Đăng ký
                      </Button>

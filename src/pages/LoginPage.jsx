@@ -13,6 +13,10 @@ import {
    InputRightElement,
    Text,
    useToast,
+   Alert,
+   AlertIcon,
+   AlertTitle,
+   AlertDescription,
 } from "@chakra-ui/react";
 import { Field, Form, Formik, useFormik } from "formik";
 import * as Yup from "yup";
@@ -21,6 +25,7 @@ import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../redux/actions/userActions";
+import { setError } from "../redux/slices/user";
 
 const LoginPage = () => {
    const [show, setShow] = React.useState(false);
@@ -52,14 +57,6 @@ const LoginPage = () => {
    const handleLogin = (values) => {
       const { email, password } = values;
       dispatch(login(email, password));
-      if (error) {
-         toast({
-            description: error,
-            status: "error",
-            isClosable: true,
-            position: "top",
-         });
-      }
    };
 
    useEffect(() => {
@@ -105,6 +102,18 @@ const LoginPage = () => {
             >
                {(props) => (
                   <Form>
+                     {error && (
+                        <Alert
+                           status="error"
+                           flexDirection="column"
+                           alignItems="center"
+                           justifyContent="center"
+                           textAlign="center"
+                        >
+                           <AlertIcon />
+                           <AlertTitle>{error}</AlertTitle>
+                        </Alert>
+                     )}
                      <Field name="email">
                         {({ field, form }) => (
                            <FormControl
@@ -166,11 +175,13 @@ const LoginPage = () => {
                      </Text>
 
                      <Button
+                        isLoading={loading}
                         type="submit"
                         colorScheme="blue"
                         bg="#f5897e"
                         _hover={{ bg: "#f56051" }}
                         mt={4}
+                        loadingText="Đăng nhập"
                      >
                         Đăng nhập
                      </Button>

@@ -48,7 +48,6 @@ const Account = () => {
          position: "top",
       });
    };
-
    const handleClick = (link) => {
       if (link.text === "Đăng xuất") {
          logoutHandler();
