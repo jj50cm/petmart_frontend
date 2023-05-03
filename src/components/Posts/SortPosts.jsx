@@ -8,9 +8,9 @@ import {
    Text,
 } from "@chakra-ui/react";
 import React from "react";
-import TotalProduct from "../TotalProduct";
+import TotalPosts from "./TotalPosts";
 
-const SortProducts = () => {
+const SortPosts = () => {
    const sortBy = [
       { text: "Giá (tăng dần)", value: "lowest" },
       { text: "Giá (giảm dần)", value: "highest" },
@@ -19,7 +19,7 @@ const SortProducts = () => {
    ];
    return (
       <Flex alignItems={"center"} justifyContent={"space-between"} mb={"10px"}>
-         <TotalProduct />
+         <TotalPosts />
          <Divider
             orientation="horizontal"
             borderColor="gray.500"
@@ -41,4 +41,4 @@ const SortProducts = () => {
    );
 };
 
-export default SortProducts;
+export default SortPosts;

@@ -4,7 +4,7 @@ import React from "react";
 const Hero = () => {
    return (
       <Box
-         height={"100%"}
+         height={"calc(100vh - 84px)"}
          bgImage="url('./images/slide-2.png')"
          bgPosition="center"
          bgSize={"cover"}

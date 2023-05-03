@@ -15,7 +15,7 @@ import Searbar from "../Searbar";
 import FilterForm from "../FilterForm";
 import ColorBox from "../ColorBox";
 
-const FilterProducts = () => {
+const FilterPosts = () => {
    const filterCategory = [
       {
          name: "Địa chỉ",
@@ -45,14 +45,7 @@ const FilterProducts = () => {
    const colors = ["yellow", "black", "pink"];
 
    return (
-      <Box
-         position={"sticky"}
-         top={"0"}
-         zIndex={"1"}
-         flexBasis={"20%"}
-         mr={"10px"}
-         mb={{ sm: "10px" }}
-      >
+      <Box flexBasis={"20%"} mr={"10px"} mb={{ sm: "10px" }}>
          <Flex flexDirection={"column"} gap={"16px"}>
             <Box>
                <Searbar />
@@ -60,7 +53,7 @@ const FilterProducts = () => {
             {filterCategory.map((category, index) => {
                return <FilterForm key={index} category={category} />;
             })}
-            <Box>
+            {/* <Box>
                <Text fontSize={"md"} fontWeight={"medium"} mb={"6px"}>
                   Màu sắc
                </Text>
@@ -77,10 +70,10 @@ const FilterProducts = () => {
                         })}
                   </Flex>
                </Flex>
-            </Box>
+            </Box> */}
          </Flex>
       </Box>
    );
 };
 
-export default FilterProducts;
+export default FilterPosts;

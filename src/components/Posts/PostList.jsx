@@ -1,12 +1,12 @@
 import { Box, SimpleGrid } from "@chakra-ui/react";
 import React, { useState } from "react";
-import SortProducts from "./SortProducts";
-import ProductItem from "./ProductItem";
+import SortPosts from "./SortPosts";
+import SinglePost from "./SinglePost";
 import { listItem } from "../../data.js";
 import { Grid, GridItem } from "@chakra-ui/react";
 import Pagination from "./Pagination";
 
-const ProductList = () => {
+const PostList = () => {
    const [currentPage, setCurrentPage] = useState(1);
    const totalPages = 10; // Example total number of pages
 
@@ -20,7 +20,7 @@ const ProductList = () => {
    };
    return (
       <Box flexBasis={"80%"}>
-         <SortProducts></SortProducts>
+         <SortPosts></SortPosts>
          <Grid
             templateColumns={{
                base: "repeat(1, 1fr)",
@@ -33,7 +33,7 @@ const ProductList = () => {
             {listItem.map((item) => {
                return (
                   <GridItem key={item.id}>
-                     <ProductItem item={item} />
+                     <SinglePost item={item} />
                   </GridItem>
                );
             })}
@@ -47,4 +47,4 @@ const ProductList = () => {
    );
 };
 
-export default ProductList;
+export default PostList;

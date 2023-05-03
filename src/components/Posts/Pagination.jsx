@@ -27,7 +27,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
 
    const pages = pagesArray.slice(startPage - 1, endPage);
    return (
-      <Flex alignItems="center" justifyContent="center" my="6">
+      <Flex alignItems="center" justifyContent="center" mt={"40px"}>
          <Box mr="4">
             <Text fontSize="sm">
                Page {currentPage} of {totalPages}

@@ -5,7 +5,7 @@ export const listItem = [
       category: "Chó",
       address: "Hà Nội",
       name: "BẦY PUG MẶT XỆ THUẦN CHỦNG BABY",
-      rating: 4,
+      rating: 4.0,
       author: "Nguyễn Văn Nam",
       price: 3500000,
       gender: "đực",
@@ -86,5 +86,13 @@ export const listItem = [
       author: "Nguyễn Văn Nam",
       price: 3500000,
       gender: "đực",
+   },
+];
+
+export const posts = [
+   {
+      id: 1,
+      expiredDay: "30/4/2023",
+      numOfView: 10,
    },
 ];

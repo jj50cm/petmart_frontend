@@ -18,19 +18,19 @@ import React from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { CiLocationOn } from "react-icons/ci";
 import RatingSystem from "../Rating/RatingSystem";
+import { Link as ReactLink } from "react-router-dom";
+import numberWithCommas from "../../utils/numberWithCommas";
+import { ViewIcon } from "@chakra-ui/icons";
 
-function ProductItem({ item }) {
+function SinglePost({ item }) {
    const { id, img, category, address, name, rating, author, gender, price } =
       item;
    // console.log(item);
-   const numberWithCommas = (num) => {
-      return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-   };
 
    return (
       <Card maxW="xs">
          <CardBody>
-            <Link>
+            <Link as={ReactLink} to={`/products/${id}`}>
                <Image
                   height={"200px"}
                   width={"100%"}
@@ -61,7 +61,9 @@ function ProductItem({ item }) {
                   color: "green.500",
                }}
             >
-               {name}
+               <Link as={ReactLink} to={`/products/${id}`}>
+                  {name}
+               </Link>
             </Heading>
             <HStack color={"gray.500"}>
                <Text>By</Text>
@@ -91,7 +93,7 @@ function ProductItem({ item }) {
                {numberWithCommas(price)}
             </Text>
             <Button
-               leftIcon={<Icon as={AiOutlineShoppingCart} boxSize={5}></Icon>}
+               leftIcon={<Icon as={ViewIcon} boxSize={4}></Icon>}
                bgColor={"green.100"}
                color={"green.400"}
                variant="outline"
@@ -102,11 +104,11 @@ function ProductItem({ item }) {
                   transform: "translateY(-2px)",
                }}
             >
-               Add
+               Xem
             </Button>
          </CardFooter>
       </Card>
    );
 }
 
-export default ProductItem;
+export default SinglePost;
