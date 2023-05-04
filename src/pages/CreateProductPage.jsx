@@ -30,13 +30,18 @@ import { useState, useEffect } from "react";
 import * as Yup from "yup";
 import axios from "axios";
 import React from "react";
-
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
+import moment from "moment";
 
 const CreateProductPage = () => {
 
     const [province, setProvince] = useState([]);
     const [district, setDistrict] = useState([]);
     const [commune, setCommune] = useState([]);
+    const [endDatee, setEndDatee] = useState(
+        moment().add(7, "days").toDate()
+    )
 
     useEffect(() => {
         const fetchProvince = async () => {
@@ -58,6 +63,11 @@ const CreateProductPage = () => {
         const districtName = e.target.value;
         const result = district.find((d) => d.Name === districtName);
         setCommune(result.Wards);
+    }
+
+    const handleEndDateeChange = (date) => {
+        setEndDatee(date);
+        
     }
 
     const validationSchema = Yup.object().shape({
@@ -85,6 +95,11 @@ const CreateProductPage = () => {
         district: Yup.string().required('Vui lòng nhập trường này'),
         commune: Yup.string().required('Vui lòng nhập trường này'),
         address: Yup.string().required('Vui lòng nhập trường này'),
+        // endDate: Yup
+        //         .date()
+        //         .required('Vui lòng chọn ngày kết thúc')
+        //         .min(new Date(), 'Thời gian kết thúc phải không nhỏ hơn ngày hiện tại')
+        endDate: Yup.string().required('Vui lòng chọn trường này')
     })
 
     return (
@@ -117,6 +132,8 @@ const CreateProductPage = () => {
                         district: "",
                         commune: "",
                         address: "",
+                        endDate: "",
+                        image: [],
                     }}
                     onSubmit={
                         async (values) => {
@@ -407,7 +424,28 @@ const CreateProductPage = () => {
                                 )}
                             </Field>
 
-                            
+                            <Field name="endDate">
+                                {({ field, form }) => (
+                                    <FormControl
+                                        isRequired
+                                        isInvalid={form.errors.endDate && form.touched.endDate}
+                                        mb={"4"}
+                                    >
+                                        <FormLabel>Thời gian kết thúc hiển thị</FormLabel>
+                                        <DatePicker
+                                            selected={endDatee}
+                                            // onChange={(value) => form.setValues({...form.values, endDate: value})}
+                                            onChange={(date) => {
+                                                handleEndDateeChange(date);
+                                                form.setValues({...form.values, endDate: date.toString()})
+                                            }}
+                                            minDate={moment().toDate()}
+                                            dateFormat="dd/MM/yyyy"
+                                        />
+                                        <FormErrorMessage>{form.errors.endDate}</FormErrorMessage>
+                                    </FormControl>
+                                )}
+                            </Field>
 
                             <Button
                                 type="submit"
