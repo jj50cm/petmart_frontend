@@ -15,7 +15,17 @@ import {
     Text,
     RadioGroup,
     HStack,
-    Radio
+    Radio,
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalFooter,
+    ModalBody,
+    ModalCloseButton,
+    Checkbox,
+    CheckboxGroup,
+    useDisclosure
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { Field, Form, Formik } from "formik";
@@ -27,6 +37,7 @@ function RegisterPage() {
     // state for view icon
     const [showPassword, setShowPassword] = useState(false);
     const [showRePassword, setShowRePassword] = useState(false);
+    const { isOpen, onOpen, onClose } = useDisclosure();
 
     const handlePassword = () => {
         setShowPassword(!showPassword);
@@ -70,6 +81,10 @@ function RegisterPage() {
             .string()
             .required("Vui lòng nhập Xác nhận mật khẩu")
             .oneOf([Yup.ref('password'), null], "Mật khẩu không khớp"),
+        policy: Yup
+            .boolean()
+            .oneOf([true], 'Bạn cần chấp nhận điều khoản và quyền riêng tư để tiếp tục')
+            .required('Vui lòng đọc Điều khoản và chọn đồng ý'),
     });
 
     return (
@@ -98,7 +113,7 @@ function RegisterPage() {
                         email: "",
                         password: "",
                         repassword: "",
-
+                        policy: "",
                     }}
                     onSubmit={async (values) => {
                         console.log(values)
@@ -183,8 +198,8 @@ function RegisterPage() {
                                         <FormLabel>Bạn là</FormLabel>
                                         <RadioGroup
                                             {...field}
-                                           onChange={(value) => form.setValues({...form.values, role: value})}
-                                           
+                                            onChange={(value) => form.setValues({ ...form.values, role: value })}
+
                                         >
                                             <HStack spacing={"100px"}>
                                                 <Radio value="buyer">Người mua</Radio>
@@ -266,7 +281,45 @@ function RegisterPage() {
                                     </FormControl>
                                 )}
                             </Field>
+                            <Field name='policy'>
+                                {({ field, form }) => (
+                                    <FormControl
+                                        isRequired
+                                        isInvalid={form.errors.policy && form.touched.policy}
+                                        mb={"4"}
+                                    >
+                                        <Checkbox isChecked={form.values.policy} onChange={(e) => form.setValues({ ...form.values, policy: e.target.checked })}>
+                                            Tôi đồng ý với {' '}
+                                            <Button variant={'link'} onClick={onOpen}>
+                                                Điều khoản và dịch vụ
+                                            </Button>
+                                        </Checkbox>
+                                        <Modal isOpen={isOpen} onClose={onClose}>
+                                            <ModalOverlay />
+                                            <ModalContent>
+                                                <ModalHeader>Điều khoản</ModalHeader>
+                                                <ModalCloseButton />
+                                                <ModalBody>
+                                                    các chính sách như sau
+                                                </ModalBody>
 
+                                                <ModalFooter>
+                                                    <Button 
+                                                        colorScheme='blue' 
+                                                        bg="#f5897e"
+                                                        _hover={{ bg: "#f56051" }}
+                                                        mr={3} 
+                                                        onClick={onClose}
+                                                    >
+                                                        Đóng
+                                                    </Button>
+                                                </ModalFooter>
+                                            </ModalContent>
+                                        </Modal>
+                                        <FormErrorMessage>{form.errors.policy}</FormErrorMessage>
+                                    </FormControl>
+                                )}
+                            </Field>
                             <Button
                                 type="submit"
                                 mt={4}
