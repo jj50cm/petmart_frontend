@@ -1,79 +1,67 @@
-import {
-   Box,
-   Divider,
-   Flex,
-   FormControl,
-   FormLabel,
-   Heading,
-   Input,
-   Link,
-   Select,
-   Text,
-} from "@chakra-ui/react";
-import React from "react";
-import Searbar from "../Searbar";
+import { Box, Flex } from "@chakra-ui/react";
+import React, { useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import FilterForm from "../FilterForm";
-import ColorBox from "../ColorBox";
+import Searbar from "../Searbar";
 
 const FilterPosts = () => {
-   const filterCategory = [
-      {
-         name: "Địa chỉ",
-         data: ["Tất cả", "Hà nội", "Bắc Ninh"],
-      },
-      {
-         name: "Loại thú cưng",
-         data: ["Tất cả", "Chó", "Mèo"],
-      },
-      {
-         name: "Giống",
-         data: ["Tất cả", "pitbull", "Mun"],
-      },
-      {
-         name: "Tuổi",
-         data: ["Tất cả", "6 tháng", "1 năm"],
-      },
-      {
-         name: "Giới tính",
-         data: ["Tất cả", "đực", "cái"],
-      },
-      {
-         name: "Cân nặng",
-         data: ["Tất cả", "2kg", "4kg"],
-      },
-   ];
-   const colors = ["yellow", "black", "pink"];
+  const inputRefs = useRef([]);
+  const dispatch = useDispatch();
+  const post = useSelector((state) => state.post);
+  const { loading, error, postList } = post;
 
-   return (
-      <Box flexBasis={"20%"} mr={"10px"} mb={{ sm: "10px" }}>
-         <Flex flexDirection={"column"} gap={"16px"}>
-            <Box>
-               <Searbar />
+  const handleFilter = (param) => {
+    console.log(param);
+    inputRefs.current.forEach((ref) => {
+      console.log(ref.current.firstChild);
+    });
+  };
+
+  const filterCategory = [
+    {
+      name: "Địa chỉ",
+      data: ["Tất cả", "Hà nội", "Bắc Ninh"],
+    },
+    {
+      name: "Loại thú cưng",
+      data: ["Tất cả", "Chó", "Mèo"],
+    },
+    {
+      name: "Tuổi (tháng)",
+      data: ["Tất cả", "0-12", "12-36", "lớn hơn 36"],
+    },
+    {
+      name: "Giới tính",
+      data: ["Tất cả", "Đực", "Cái"],
+    },
+    {
+      name: "Cân nặng",
+      data: ["Tất cả", "2kg", "4kg"],
+    },
+    {
+      name: "Vaccince",
+      data: ["Tất cả", "đã tiêm", "chưa tiêm"],
+    },
+  ];
+
+  return (
+    <Box flexBasis={"20%"} mr={"10px"} mb={{ sm: "10px" }}>
+      <Flex flexDirection={"column"} gap={"16px"}>
+        <Box>
+          <Searbar />
+        </Box>
+        {filterCategory.map((category, index) => {
+          inputRefs.current[index] =
+            inputRefs.current[index] || React.createRef();
+          return (
+            <Box key={index} ref={inputRefs.current[index]}>
+              <FilterForm category={category} handleFilter={handleFilter} />
             </Box>
-            {filterCategory.map((category, index) => {
-               return <FilterForm key={index} category={category} />;
-            })}
-            {/* <Box>
-               <Text fontSize={"md"} fontWeight={"medium"} mb={"6px"}>
-                  Màu sắc
-               </Text>
-               <Flex pr={"12px"} alignItems={"center"}>
-                  <Link color="teal.500">Tất cả</Link>
-                  <Flex
-                     justifyContent={"space-between"}
-                     ml={"14px"}
-                     gap={"10px"}
-                  >
-                     {colors &&
-                        colors.map((color) => {
-                           return <ColorBox key={color} color={color} />;
-                        })}
-                  </Flex>
-               </Flex>
-            </Box> */}
-         </Flex>
-      </Box>
-   );
+          );
+        })}
+      </Flex>
+    </Box>
+  );
 };
 
 export default FilterPosts;
