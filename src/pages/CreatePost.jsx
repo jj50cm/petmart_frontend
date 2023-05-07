@@ -26,6 +26,7 @@ import {
 } from "@chakra-ui/react";
 import { Field, Form, Formik, useFormik } from "formik";
 import { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 
 import * as Yup from "yup";
 import axios from "axios";
@@ -44,6 +45,7 @@ const CreatePost = () => {
     const [endDatee, setEndDatee] = useState(
         moment().add(7, "days").toDate()
     )
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchProvince = async () => {
@@ -53,18 +55,6 @@ const CreatePost = () => {
 
         fetchProvince();
     }, []);
-
-    // `    const instance = axios.create({
-    //         baseURL: `${import.meta.env.VITE_BASE_URL}/apiùnglại 
-    //         tạo cái này ra 1 componet riêng `
-    //     })
-    // `cius không biết tạo component tr ơi, nma từ từ để test phát a ạ
-    const config = {
-        headers: {
-            "Content-Type": "application/json",
-        },
-    };
-
 
     const handleProvinceChange = (e) => {
         const provinceName = e.target.value;
@@ -110,12 +100,12 @@ const CreatePost = () => {
         vaccination: Yup
             .boolean()
             .required('Vui lòng chọn trường này'),
-        // .oneOf(['true', 'false'], "Vui lòng chọn trường này"),
         description: Yup.string().required('Vui lòng nhập trường này'),
         province: Yup.string().required('Vui lòng nhập trường này'),
         district: Yup.string().required('Vui lòng nhập trường này'),
         commune: Yup.string().required('Vui lòng nhập trường này'),
         address: Yup.string().required('Vui lòng nhập trường này'),
+        images: Yup.array().min(1, 'Upload tối thiểu 1 ảnh').required('Vui lòng đăng ảnh minh họa'),
     })
 
     return (
@@ -147,7 +137,7 @@ const CreatePost = () => {
                         price: "",
                         weight: "",
                         age: "",
-                        vaccination: "",
+                        vaccination: false,
                         description: "",
                         images: [],
                         endDate: moment().add(7, "days").toDate().toString(),
@@ -156,16 +146,27 @@ const CreatePost = () => {
                     onSubmit={
                         async (values, {
                             setErrors,
-                            SetStatus,
+                            setStatus,
                             setSubmitting
 
                         }) => {
                             console.log(values);
-                            instance({
+                            await instance({
                                 url: `/posts/new`,
                                 method: 'POST',
-                                body: values,
+                                data: values,
                             })
+                            .then((response) => {
+                                setStatus({ success: true});
+                                setSubmitting(false);
+                                // navigate(`/posts/${response.data.postId}`);
+                                console.log(response.data.postId);
+                            })
+                            .catch((err) => {
+                                setErrors({ submit: err.message });
+                                setStatus({ success: false });
+                                setSubmitting(false);
+                            });
                         }
                     }
                     validationSchema={validationSchema}
@@ -360,15 +361,6 @@ const CreatePost = () => {
                                             
                                             
                                         >
-                                            {/* <Grid templateColumns={'repeat(3, 1fr'}>
-                                                <GridItem>
-                                                    <Radio value="1">Đã tiêm chủng</Radio>
-                                                </GridItem>
-                                                <GridItem>
-                                                    <Radio value="0">Chưa tiêm chủng</Radio>
-                                                </GridItem>
-                                                
-                                            </Grid> */}
                                             <Radio value={true}>Đã tiêm chủng</Radio>
                                             <Radio value={false} pl={"30%"}>Chưa tiêm chủng</Radio>
                                         </RadioGroup>
@@ -494,8 +486,6 @@ const CreatePost = () => {
                                         <FormLabel>Thời gian kết thúc hiển thị</FormLabel>
                                         <DatePicker
                                             selected={moment().add(7, "days").toDate()}
-
-                                            // onChange={(value) => form.setValues({...form.values, endDate: value})}
                                             onChange={(date) => {
                                                 handleEndDateeChange(date);
                                                 form.setValues({ ...form.values, endDate: date.toString() })
@@ -525,21 +515,6 @@ const CreatePost = () => {
                                 )}
                             </Field>
 
-                            {/* <Field name="images">
-                                {({ field, form }) => (
-                                    <FormControl
-                                        isRequired
-                                        isInvalid={form.errors.images && form.touched.images}
-                                        mb={"4"}
-                                    >
-                                        <FormLabel>Ảnh</FormLabel>
-                                        <imagesDropzone onUploaded={(e) => {
-                                            form.setValues({...form.values, images: e})
-                                        }}/>
-                                        <FormErrorMessage>{form.errors.images}</FormErrorMessage>
-                                    </FormControl>
-                                )}
-                            </Field> */}
 
                             <Button
                                 type="submit"
