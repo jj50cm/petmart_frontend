@@ -131,7 +131,7 @@ const CreatePost = () => {
                        district: "",
                        commune: "",
                        address: "",
-                       species: "",
+                       species: "Mèo",
                        quantity: "",
                        gender: "",
                        price: "",
