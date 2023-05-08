@@ -43,8 +43,6 @@ export const sortShowPostList = (sortBy) => async (dispatch, getState) => {
   const { postList, showPostList } = post;
   if (!postList && !showPostList) return;
 
-  console.log(sortBy);
-
   const { prop, value } = sortBy;
   // giảm dần b[prop] - a[prop]
   // tăng dần a[prop] - b[prop]
@@ -70,48 +68,36 @@ export const sortShowPostList = (sortBy) => async (dispatch, getState) => {
   dispatch(setShowPostList(sortedPosts));
 };
 
-export const filterPosts =
-  (
-    title = "",
-    page = "",
-    species = "",
-    gender = "",
-    startAge = "",
-    endAge = "",
-    vaccination = "",
-    startPrice = "",
-    endPrice = ""
-  ) =>
-  async (dispatch) => {
-    dispatch(setLoading(true));
+export const filterPosts = (filterParams) => async (dispatch) => {
+  dispatch(setLoading(true));
 
-    try {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-      const { data } = await axios.get(
-        `${
-          import.meta.env.VITE_BASE_URL
-        }/api/posts/?q=${title}&page=${page}&species=${species}&gender=${gender}&startAge=${startAge}&endAge=${endAge}&vaccination=${vaccination}&startPrice=${startPrice}&endPrice=${endPrice}`,
-        config
-      );
-      dispatch(setPostList(data));
-      console.log("lọc các posts");
-    } catch (error) {
-      console.log("Lỗi khi lọc posts");
-      dispatch(
-        setError(
-          error.response && error.response.data.message
-            ? error.response.data.message
-            : error.message
-            ? error.message
-            : "An unexpected error has occured. Please try again later."
-        )
-      );
-    }
-  };
+  try {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const { data } = await axios.get(
+      `${import.meta.env.VITE_BASE_URL}/api/posts/?${filterParams}`,
+      config
+    );
+    const { postsCount, posts } = data;
+    dispatch(setShowPostList(posts));
+    dispatch(setPostList(posts));
+    console.log("lọc các posts");
+  } catch (error) {
+    console.log("Lỗi khi lọc posts");
+    dispatch(
+      setError(
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+          ? error.message
+          : "An unexpected error has occured. Please try again later."
+      )
+    );
+  }
+};
 
 export const getPostById = (id) => async (dispatch) => {
   dispatch(setLoading(true));

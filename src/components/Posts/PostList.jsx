@@ -1,4 +1,4 @@
-import { Box, Heading, SimpleGrid } from "@chakra-ui/react";
+import { Box, Heading, SimpleGrid, Text } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import SortPosts from "./SortPosts";
 import SinglePost from "./SinglePost";
@@ -28,8 +28,14 @@ const PostList = () => {
     setCurrentPage(newPage);
   };
   return (
-    <Box flexBasis={"80%"}>
+    <Grid gridTemplateRows={"auto 1fr auto"} flexBasis={"80%"}>
       <SortPosts></SortPosts>
+
+      {loading && (
+        <Heading fontSize={"14px"} textAlign={"center"} width={"100%"}>
+          Đang tải bài viết...
+        </Heading>
+      )}
       <Grid
         templateColumns={{
           base: "repeat(1, 1fr)",
@@ -39,7 +45,6 @@ const PostList = () => {
         }}
         gap={1}
       >
-        {loading && <Heading>Loading...</Heading>}
         {error && <Heading>{error}</Heading>}
         {showPostList &&
           showPostList.length > 0 &&
@@ -56,7 +61,7 @@ const PostList = () => {
         totalPages={totalPages}
         onPageChange={handlePageChange}
       />
-    </Box>
+    </Grid>
   );
 };
 

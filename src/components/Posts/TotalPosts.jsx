@@ -6,7 +6,7 @@ const TotalPosts = () => {
   const post = useSelector((state) => state.post);
   const { postList } = post;
 
-  return <Text>{(postList && postList.length) || 0} sản phẩm</Text>;
+  return <Text>{(postList && postList.length) || 0} bài đăng</Text>;
 };
 
 export default TotalPosts;

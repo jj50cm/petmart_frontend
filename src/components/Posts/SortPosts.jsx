@@ -41,9 +41,9 @@ const SortPosts = () => {
       <Divider
         orientation="horizontal"
         borderColor="gray.500"
-        flexBasis={{ base: "20%", sm: "40%", md: "50%", lg: "68%" }}
+        flexBasis={{ base: "20%", sm: "40%", md: "50%", lg: "65%" }}
       />
-      <Box flexBasis={{ base: "40%", sm: "30%", md: "30%", lg: "15%" }}>
+      <Box flexBasis={{ base: "40%", sm: "30%", md: "30%", lg: "20%" }}>
         <Select
           placeholder=""
           value={selectVal}
