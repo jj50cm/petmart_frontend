@@ -77,6 +77,10 @@ const CreatePost = () => {
 
    }
 
+   const handleEndDateSelect = (date) => {
+        setEndDatee(date);
+   }
+
    const validationSchema = Yup.object().shape({
        title: Yup.string().required("Vui lòng nhập tiêu đề cho bài viết"),
        species: Yup.string().required('Vui lòng chọn trường này').oneOf(['Chó', 'Mèo', 'Chuột Hamster', 'Khác'], "Vui lòng chọn trường này"),
@@ -105,7 +109,7 @@ const CreatePost = () => {
        district: Yup.string().required('Vui lòng nhập trường này'),
        commune: Yup.string().required('Vui lòng nhập trường này'),
        address: Yup.string().required('Vui lòng nhập trường này'),
-       images: Yup.array().min(1, 'Upload tối thiểu 1 ảnh').required('Vui lòng đăng ảnh minh họa'),
+       images: Yup.array().min(3, 'Upload tối thiểu 3 ảnh, vui lòng tải lại tối thiểu 3 ảnh').required('Vui lòng đăng ảnh minh họa'),
    })
 
    return (
@@ -141,7 +145,6 @@ const CreatePost = () => {
                        description: "",
                        images: [],
                        endDate: moment().add(7, "days").toDate().toString(),
-
                    }}
                    onSubmit={
                        async (values, {
@@ -151,7 +154,7 @@ const CreatePost = () => {
 
                        }) => {
                            console.log(values);
-                           await instance({
+                           instance({
                                url: `/posts/new`,
                                method: 'POST',
                                data: values,
@@ -159,10 +162,11 @@ const CreatePost = () => {
                            .then((response) => {
                                setStatus({ success: true});
                                setSubmitting(false);
-                               // navigate(`/posts/${response.data.postId}`);
+                               navigate(`/posts/${response.data.postId}`);
                                console.log(response.data.postId);
                            })
                            .catch((err) => {
+                               console.log(err);
                                setErrors({ submit: err.message });
                                setStatus({ success: false });
                                setSubmitting(false);
@@ -206,7 +210,7 @@ const CreatePost = () => {
                                        mb={"4"}
                                    >
                                        <FormLabel>Loại thú cưng</FormLabel>
-                                       <Select defaultValue={'mèo'} onChange={(e) => form.setValues({ ...form.values, species: e.target.value })}>
+                                       <Select onChange={(e) => form.setValues({ ...form.values, species: e.target.value })}>
                                            {/* <option value={''} disabled hidden selected >Xin mời chọn</option> */}
                                            <option value={'Mèo'} >Mèo</option>
                                            <option value={'Chó'}>Chó</option>
@@ -357,9 +361,7 @@ const CreatePost = () => {
                                            onChange={(value) => {
                                                form.setValues({...form.values, vaccination: value === 'true' ? true : false})
                                            }
-                                           }
-                                           
-                                           
+                                           }                    
                                        >
                                            <Radio value={true}>Đã tiêm chủng</Radio>
                                            <Radio value={false} pl={"30%"}>Chưa tiêm chủng</Radio>
@@ -485,10 +487,14 @@ const CreatePost = () => {
                                    >
                                        <FormLabel>Thời gian kết thúc hiển thị</FormLabel>
                                        <DatePicker
-                                           selected={moment().add(7, "days").toDate()}
+                                           selected={endDatee}
                                            onChange={(date) => {
                                                handleEndDateeChange(date);
-                                               form.setValues({ ...form.values, endDate: date.toString() })
+                                               form.setValues({ ...form.values, endDate: date});
+                                           }}
+                                           onSelect={(date) => {
+                                               handleEndDateSelect(date);
+                                               form.setValues({ ...form.values, endDate: date});
                                            }}
                                            minDate={moment().toDate()}
                                            dateFormat="dd/MM/yyyy"

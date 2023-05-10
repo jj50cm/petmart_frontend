@@ -11,13 +11,14 @@ import {
    Spacer,
    Text,
 } from "@chakra-ui/react";
+import { EditIcon } from "@chakra-ui/icons";
 import React, { useEffect, useState } from "react";
 import { BsShieldPlus } from "react-icons/bs";
 import { MdOutlineReportGmailerrorred, MdPets } from "react-icons/md";
 import { SiSourceforge } from "react-icons/si";
 import { AiOutlineEye } from "react-icons/ai";
 import { TfiRulerAlt } from "react-icons/tfi";
-import { Link as ReactLink, useParams } from "react-router-dom";
+import { Link as ReactLink, useParams, useNavigate } from "react-router-dom";
 import SubTitle from "../components/PostDetail/SubTitle.jsx";
 import RatingSystem from "../components/Rating/RatingSystem.jsx";
 import { listItem } from "../data.js";
@@ -30,6 +31,7 @@ import { getPostById } from "../redux/actions/postActions.js";
 
 const PostDetail = () => {
    const { id } = useParams();
+   const navigate = useNavigate();
 
    const dispatch = useDispatch();
    const post = useSelector((state) => state.post);
@@ -52,6 +54,10 @@ const PostDetail = () => {
       author = singlePost.creator;
       console.log(singlePost);
    }
+   console.log(userInfo.user.id);
+   console.log(author);
+   console.log(postInfo);
+
    return (
       <>
          {loading && <Text>Loading...</Text>}
@@ -61,6 +67,19 @@ const PostDetail = () => {
                {userInfo && (
                   <Flex justifyContent={"flex-end"} mb={"20px"}>
                      <Button>Thêm vào danh sách yêu thích</Button>
+                     {(userInfo.user.id === author.id) &&
+                        <Button
+                           ml={'10px'}
+                           leftIcon={<EditIcon />}
+                           colorScheme="teal"
+                           variant={'outline'}
+                           onClick={
+                             () => navigate(`/posts/update/${postInfo.id}`)
+                           }
+                        >
+                           Chỉnh sửa
+                        </Button>
+                     }
                   </Flex>
                )}
                <Flex gap={8}>
