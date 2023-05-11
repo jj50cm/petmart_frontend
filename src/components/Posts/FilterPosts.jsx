@@ -3,11 +3,12 @@ import React, { useEffect, useState } from "react";
 import { FiFilter } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useSearchParams } from "react-router-dom";
-import { filterPosts } from "../../redux/actions/postActions";
+import { filterPosts, getPosts } from "../../redux/actions/postActions";
 import { decodeParams } from "../../utils/decodeParams";
 import FilterForm from "../FilterForm";
 import Searbar from "../Searbar";
 import { createFilterQuery } from "../../utils/createFilterQuery";
+import { setFilterParams } from "../../redux/slices/post";
 
 const filterCategory = [
   {
@@ -60,7 +61,7 @@ const FilterPosts = () => {
   const { search } = useLocation();
   const dispatch = useDispatch();
   const post = useSelector((state) => state.post);
-  const { loading, error, postList } = post;
+  const { loading, error, postList, filterParams } = post;
 
   const updateParams = (param) => {
     setQuery((prev) => [...prev, param]);
@@ -71,7 +72,7 @@ const FilterPosts = () => {
     let newParams = query.reduce((result, currentObj) => {
       return { ...result, ...currentObj };
     }, {});
-    console.log(newParams);
+    // console.log(newParams);
     setSearchParams(newParams);
   };
 
@@ -91,14 +92,16 @@ const FilterPosts = () => {
       setSearchParams(newParams);
       const filters = createFilterQuery(newParams);
       // console.log(filters);
-      dispatch(filterPosts(filters));
+      dispatch(setFilterParams(filters));
+      dispatch(getPosts());
     }
   }, [searchParams]);
 
   useEffect(() => {
     const filters = createFilterQuery(decodeParams(search));
     // console.log(filters);
-    dispatch(filterPosts(filters));
+    dispatch(setFilterParams(filters));
+    dispatch(getPosts());
   }, []);
 
   return (

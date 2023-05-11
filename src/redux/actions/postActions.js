@@ -1,42 +1,48 @@
 import axios from "axios";
 import {
   setError,
+  setIsLike,
   setLoading,
   setPostList,
+  setPostsCount,
   setShowPostList,
   setSinglePost,
 } from "../slices/post";
+import { checkPostId } from "../../utils/checkPostId";
 
-export const getAllPosts = () => async (dispatch) => {
-  dispatch(setLoading(true));
-  try {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-    const { data } = await axios.get(
-      `${import.meta.env.VITE_BASE_URL}/api/posts`,
-      config
-    );
-    const { posts } = data;
-    dispatch(setShowPostList(posts));
-    dispatch(setPostList(posts));
+export const getAllPosts =
+  (currentPage = 1) =>
+  async (dispatch) => {
+    dispatch(setLoading(true));
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/api/posts/?page=${currentPage}`,
+        config
+      );
+      const { posts, postsCount } = data;
+      dispatch(setShowPostList(posts));
+      dispatch(setPostList(posts));
+      dispatch(setPostsCount(postsCount));
 
-    console.log("lấy ds posts");
-  } catch (error) {
-    console.log("Lỗi khi lấy bài đăng");
-    dispatch(
-      setError(
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message
-          ? error.message
-          : "An unexpected error has occured. Please try again later."
-      )
-    );
-  }
-};
+      console.log("lấy ds posts");
+    } catch (error) {
+      console.log("Lỗi khi lấy bài đăng");
+      dispatch(
+        setError(
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message
+            ? error.message
+            : "An unexpected error has occured. Please try again later."
+        )
+      );
+    }
+  };
 
 export const sortShowPostList = (sortBy) => async (dispatch, getState) => {
   const { post } = getState();
@@ -84,6 +90,7 @@ export const filterPosts = (filterParams) => async (dispatch) => {
     const { postsCount, posts } = data;
     dispatch(setShowPostList(posts));
     dispatch(setPostList(posts));
+    dispatch(setPostsCount(postsCount));
     console.log("lọc các posts");
   } catch (error) {
     console.log("Lỗi khi lọc posts");
@@ -98,6 +105,51 @@ export const filterPosts = (filterParams) => async (dispatch) => {
     );
   }
 };
+
+export const getPosts =
+  (currentPage = 1) =>
+  async (dispatch, getState) => {
+    const {
+      post: { filterParams },
+    } = getState();
+    dispatch(setLoading(true));
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      console.log(filterParams);
+      console.log(currentPage);
+
+      const { data } = await axios.get(
+        `${
+          import.meta.env.VITE_BASE_URL
+        }/api/posts/?${filterParams}&page=${currentPage}`,
+        config
+      );
+      const { postsCount, posts } = data;
+      console.log(`/api/posts/?${filterParams}&page=${currentPage}`);
+      // console.log(posts);
+      // cập nhật tổng số bài đăng
+      console.log(data);
+      dispatch(setPostsCount(postsCount));
+      dispatch(setShowPostList(posts));
+      dispatch(setPostList(posts));
+      console.log("lấy posts");
+    } catch (error) {
+      console.log("Lỗi khi lọc posts");
+      dispatch(
+        setError(
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message
+            ? error.message
+            : "An unexpected error has occured. Please try again later."
+        )
+      );
+    }
+  };
 
 export const getPostById = (id) => async (dispatch) => {
   dispatch(setLoading(true));
@@ -115,6 +167,80 @@ export const getPostById = (id) => async (dispatch) => {
     console.log("lấy 1 bai dang");
   } catch (error) {
     console.log("Lỗi khi lấy 1 bài đăng");
+    dispatch(
+      setError(
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+          ? error.message
+          : "An unexpected error has occured. Please try again later."
+      )
+    );
+  }
+};
+
+export const getFavoriteList = (postId) => async (dispatch, getState) => {
+  // dispatch(setLoading(true));
+
+  const {
+    user: { userInfo },
+  } = getState();
+  const userId = userInfo.user.id;
+
+  try {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const { data } = await axios.get(
+      `${import.meta.env.VITE_BASE_URL}/api/users/${userId}/favorite`,
+      config
+    );
+    const {
+      user: { posts },
+    } = data;
+    // kiểm tra trong ds có postId ko
+    const havePostID = checkPostId(posts, postId);
+    dispatch(setIsLike(havePostID));
+    console.log("lấy ds bài yêu thích");
+  } catch (error) {
+    console.log("Lỗi khi lấy 1 bài đăng");
+    dispatch(
+      setError(
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+          ? error.message
+          : "An unexpected error has occured. Please try again later."
+      )
+    );
+  }
+};
+
+export const updateFavorite = (postId) => async (dispatch, getState) => {
+  dispatch(setLoading(true));
+  const {
+    user: { userInfo },
+    post: { isLike },
+  } = getState();
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.accessToken}`,
+        "Content-Type": "application/json",
+      },
+    };
+    const reqBody = { postId };
+    const { data } = await axios.patch(
+      `${import.meta.env.VITE_BASE_URL}/api/users/favorite`,
+      reqBody,
+      config
+    );
+    // console.log(data);
+    console.log("cập nhật like");
+    dispatch(setIsLike(!isLike));
+  } catch (error) {
     dispatch(
       setError(
         error.response && error.response.data.message

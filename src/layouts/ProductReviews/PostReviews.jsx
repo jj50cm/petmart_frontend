@@ -5,13 +5,13 @@ import PostRatingOverview from "./PostRatingOverview";
 import PostRatingList from "./PostRatingList";
 
 const PostReviews = () => {
-   return (
-      <Box>
-         <SubTitle>Đánh giá sản phẩm</SubTitle>
-         <PostRatingOverview />
-         <PostRatingList />
-      </Box>
-   );
+  return (
+    <Box>
+      <SubTitle>Đánh giá sản phẩm</SubTitle>
+      <PostRatingOverview />
+      <PostRatingList />
+    </Box>
+  );
 };
 
 export default PostReviews;

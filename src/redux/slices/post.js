@@ -6,6 +6,9 @@ export const initialState = {
   postList: null,
   showPostList: null,
   singlePost: null,
+  postsCount: 0,
+  filterParams: "",
+  isLike: false,
 };
 
 export const postSlice = createSlice({
@@ -20,6 +23,12 @@ export const postSlice = createSlice({
       state.error = null;
       state.loading = false;
     },
+    setPostsCount: (state, { payload }) => {
+      state.postsCount = payload;
+      state.error = null;
+      state.loading = false;
+    },
+
     setShowPostList: (state, { payload }) => {
       state.showPostList = payload;
       state.loading = false;
@@ -27,6 +36,16 @@ export const postSlice = createSlice({
     },
     setSinglePost: (state, { payload }) => {
       state.singlePost = payload;
+      state.error = null;
+      state.loading = false;
+    },
+    setFilterParams: (state, { payload }) => {
+      state.filterParams = payload;
+      state.error = null;
+      state.loading = false;
+    },
+    setIsLike: (state, { payload }) => {
+      state.isLike = payload;
       state.error = null;
       state.loading = false;
     },
@@ -43,6 +62,9 @@ export const {
   setPostList,
   setSinglePost,
   setShowPostList,
+  setPostsCount,
+  setFilterParams,
+  setIsLike,
 } = postSlice.actions;
 
 export default postSlice.reducer;

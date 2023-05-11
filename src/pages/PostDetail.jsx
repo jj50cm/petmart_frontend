@@ -1,160 +1,140 @@
 import {
-   Box,
-   Button,
-   Divider,
-   Flex,
-   HStack,
-   Heading,
-   Icon,
-   Link,
-   SimpleGrid,
-   Spacer,
-   Text,
+  Box,
+  Button,
+  Divider,
+  Flex,
+  HStack,
+  Heading,
+  Icon,
+  Link,
+  Spacer,
+  Text,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
-import { BsShieldPlus } from "react-icons/bs";
-import { MdOutlineReportGmailerrorred, MdPets } from "react-icons/md";
-import { SiSourceforge } from "react-icons/si";
+import React, { useEffect } from "react";
 import { AiOutlineEye } from "react-icons/ai";
-import { TfiRulerAlt } from "react-icons/tfi";
-import { Link as ReactLink, useParams } from "react-router-dom";
-import SubTitle from "../components/PostDetail/SubTitle.jsx";
-import RatingSystem from "../components/Rating/RatingSystem.jsx";
-import { listItem } from "../data.js";
-import PostReviews from "../layouts/ProductReviews/PostReviews.jsx";
-import numberWithCommas from "../utils/numberWithCommas.js";
-import PostImages from "../components/PostDetail/PostImages.jsx";
+
 import { useDispatch, useSelector } from "react-redux";
+import { Link as ReactLink, useParams } from "react-router-dom";
+import PostImages from "../components/PostDetail/PostImages.jsx";
+import LikeButton from "../components/Posts/LikeButton.jsx";
+import RatingSystem from "../components/Rating/RatingSystem.jsx";
 import PostInformation from "../layouts/ProductReviews/PostInformation.jsx";
+import PostReviews from "../layouts/ProductReviews/PostReviews.jsx";
 import { getPostById } from "../redux/actions/postActions.js";
+import numberWithCommas from "../utils/numberWithCommas.js";
+import LoadingList from "../components/Admin/LoadingList.jsx";
 
 const PostDetail = () => {
-   const { id } = useParams();
+  const { id } = useParams();
 
-   const dispatch = useDispatch();
-   const post = useSelector((state) => state.post);
-   const user = useSelector((state) => state.user);
-   const { userInfo } = user;
+  const dispatch = useDispatch();
+  const post = useSelector((state) => state.post);
+  const { loading, error, singlePost } = post;
+  const user = useSelector((state) => state.user);
+  const { userInfo } = user;
 
-   const { loading, error, singlePost } = post;
-   const views = 10;
-   const numOfcomment = 4;
+  const views = 10;
+  const numOfcomment = 4;
 
-   useEffect(() => {
-      dispatch(getPostById(id));
-   }, []);
-   let postInfo = null;
-   let author = null;
-   let images = [];
-   if (singlePost) {
-      postInfo = singlePost.post;
-      images = postInfo.images;
-      author = singlePost.creator;
-      console.log(singlePost);
-   }
-   return (
-      <>
-         {loading && <Text>Loading...</Text>}
-         {error && <Text>{error}</Text>}
-         {!loading && postInfo && (
-            <Box width={"80%"} mx={"auto"} padding={8} my={"32px"}>
-               {userInfo && (
-                  <Flex justifyContent={"flex-end"} mb={"20px"}>
-                     <Button>Thêm vào danh sách yêu thích</Button>
+  useEffect(() => {
+    dispatch(getPostById(id));
+  }, []);
+
+  let postInfo = null;
+  let author = null;
+  let images = [];
+  if (singlePost) {
+    postInfo = singlePost.post;
+    images = postInfo.images;
+    author = singlePost.creator;
+    //  console.log(singlePost);
+  }
+  return (
+    <>
+      {loading && <LoadingList />}
+      {error && <Text>{error}</Text>}
+      {!loading && postInfo && (
+        <Box width={"80%"} mx={"auto"} padding={8} my={"32px"}>
+          <Flex gap={8}>
+            <PostImages images={images} />
+            <Box width={"48%"}>
+              <Heading fontSize={"26px"} color={"#453227"}>
+                {postInfo.title}
+              </Heading>
+              <Flex padding={"12px"} alignItems={"center"}>
+                <Flex height={"32px"} gap="10px" alignItems={"center"}>
+                  <Flex>
+                    <Text mr={"4px"} color={"pink.500"}>
+                      {postInfo.star && postInfo.star.toString()}
+                    </Text>
+                    <RatingSystem rating={4} />
                   </Flex>
-               )}
-               <Flex gap={8}>
-                  <PostImages images={images} />
-                  <Box width={"48%"}>
-                     <Heading fontSize={"26px"} color={"#453227"}>
-                        {postInfo.title}
-                     </Heading>
-                     <Flex padding={"12px"} alignItems={"center"}>
-                        <Flex height={"32px"} gap="10px" alignItems={"center"}>
-                           <Flex>
-                              <Text mr={"4px"} color={"pink.500"}>
-                                 {postInfo.star.toString()}
-                              </Text>
-                              <RatingSystem rating={4} />
-                           </Flex>
-                           <Divider
-                              orientation="vertical"
-                              height={"20px"}
-                              width={"1px"}
-                              bgColor={"gray.500"}
-                           />
-                           <Text>
-                              {numOfcomment > 1
-                                 ? `${numOfcomment} comments`
-                                 : `${numOfcomment} comment`}
-                           </Text>
-                           <Divider
-                              orientation="vertical"
-                              height={"20px"}
-                              width={"1px"}
-                              bgColor={"gray.500"}
-                           />
-                           <Text>{postInfo.views} lượt xem</Text>
-                        </Flex>
-                        <Spacer />
-                        {/* Tố cáo */}
-                        <Button
-                           bgColor={"red.300"}
-                           color={"white"}
-                           _hover={{
-                              backgroundColor: "red.200",
-                           }}
-                        >
-                           <Icon
-                              as={MdOutlineReportGmailerrorred}
-                              boxSize={5}
-                           ></Icon>
-                        </Button>
-                     </Flex>
-                     <Heading color={"#ee4d2d"}>
-                        {numberWithCommas(postInfo.price)}đ
-                     </Heading>
-                     <Flex my={6}>
-                        <Button
-                           bgColor={"green"}
-                           color={"white"}
-                           _hover={{ backgroundColor: "green.400" }}
-                        >
-                           Liên hệ với người bán
-                        </Button>
-                        <Spacer />
-                        <Text fontSize={"16px"}>
-                           Tác giả:
-                           <Link
-                              color={"green.400"}
-                              as={ReactLink}
-                              to={`/author/${author.id}`}
-                              ml={"6px"}
-                           >
-                              {author.username}
-                           </Link>
-                        </Text>
-                     </Flex>
+                  <Divider
+                    orientation="vertical"
+                    height={"20px"}
+                    width={"1px"}
+                    bgColor={"gray.500"}
+                  />
+                  <Text>
+                    {numOfcomment > 1
+                      ? `${numOfcomment} comments`
+                      : `${numOfcomment} comment`}
+                  </Text>
+                  <Divider
+                    orientation="vertical"
+                    height={"20px"}
+                    width={"1px"}
+                    bgColor={"gray.500"}
+                  />
+                  <Text>{postInfo.views} lượt xem</Text>
+                </Flex>
+                <Spacer />
+                {/* Yêu thích bài đăng */}
+                {userInfo && <LikeButton postId={postInfo.id} />}
+              </Flex>
+              <Heading color={"#ee4d2d"}>
+                {numberWithCommas(postInfo.price)}đ
+              </Heading>
+              <Flex my={6}>
+                <Button
+                  bgColor={"green"}
+                  color={"white"}
+                  _hover={{ backgroundColor: "green.400" }}
+                >
+                  Liên hệ với người bán
+                </Button>
+                <Spacer />
+                <Text fontSize={"16px"}>
+                  Tác giả:
+                  <Link
+                    color={"green.400"}
+                    as={ReactLink}
+                    to={`/author/${author.id}`}
+                    ml={"6px"}
+                  >
+                    {author.username}
+                  </Link>
+                </Text>
+              </Flex>
 
-                     <Flex justifyContent={"space-between"} color={"gray.600"}>
-                        <Text>
-                           {" "}
-                           <Text as={"span"}>Loại thú cưng :</Text>{" "}
-                           {postInfo.species}
-                        </Text>
-                     </Flex>
-                     <HStack mt={4} color={"gray.600"} fontSize={"15px"}>
-                        <Icon as={AiOutlineEye} />
-                        <Text> {postInfo.views} lượt xem</Text>
-                     </HStack>
-                  </Box>
-               </Flex>
-               <PostInformation postInfo={postInfo} />
-               <PostReviews />
+              <Flex justifyContent={"space-between"} color={"gray.600"}>
+                <Text>
+                  {" "}
+                  <Text as={"span"}>Loại thú cưng :</Text> {postInfo.species}
+                </Text>
+              </Flex>
+              <HStack mt={4} color={"gray.600"} fontSize={"15px"}>
+                <Icon as={AiOutlineEye} />
+                <Text> {postInfo.views} lượt xem</Text>
+              </HStack>
             </Box>
-         )}
-      </>
-   );
+          </Flex>
+          <PostInformation postInfo={postInfo} />
+          <PostReviews />
+        </Box>
+      )}
+    </>
+  );
 };
 
 export default PostDetail;

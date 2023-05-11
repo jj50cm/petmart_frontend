@@ -1,32 +1,20 @@
-import { Box, Heading, SimpleGrid, Text } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
-import SortPosts from "./SortPosts";
-import SinglePost from "./SinglePost";
-import { listItem } from "../../data.js";
-import { Grid, GridItem } from "@chakra-ui/react";
-import Pagination from "./Pagination";
+import { Grid, GridItem, Heading } from "@chakra-ui/react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllPosts } from "../../redux/actions/postActions";
+import { getPosts } from "../../redux/actions/postActions";
+import Pagination from "./Pagination";
+import SinglePost from "./SinglePost";
+import SortPosts from "./SortPosts";
 
 const PostList = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-
   const dispatch = useDispatch();
   const post = useSelector((state) => state.post);
-  const { loading, error, showPostList } = post;
-  const totalPages = 10; // Example total number of pages
+  const { loading, error, showPostList, postsCount } = post;
+
   useEffect(() => {
-    dispatch(getAllPosts());
+    dispatch(getPosts());
   }, []);
 
-  const handlePageChange = (newPage) => {
-    if (newPage < 1) {
-      newPage = 1; // Set page to 1 if newPage is negative
-    } else if (newPage > totalPages) {
-      newPage = totalPages; // Set page to last page if newPage is greater than total pages
-    }
-    setCurrentPage(newPage);
-  };
   return (
     <Grid gridTemplateRows={"auto 1fr auto"} flexBasis={"80%"}>
       <SortPosts></SortPosts>
@@ -56,11 +44,7 @@ const PostList = () => {
             );
           })}
       </Grid>
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-      />
+      <Pagination itemsPerPage={8} />
     </Grid>
   );
 };
