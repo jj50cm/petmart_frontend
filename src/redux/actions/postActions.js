@@ -128,12 +128,12 @@ export const getPosts =
         }/api/posts/?${filterParams}&page=${currentPage}`,
         config
       );
-      const { postsCount, posts } = data;
+      const { totalPosts, posts } = data;
       console.log(`/api/posts/?${filterParams}&page=${currentPage}`);
       // console.log(posts);
       // cập nhật tổng số bài đăng
       console.log(data);
-      dispatch(setPostsCount(postsCount));
+      dispatch(setPostsCount(totalPosts));
       dispatch(setShowPostList(posts));
       dispatch(setPostList(posts));
       console.log("lấy posts");
@@ -167,6 +167,40 @@ export const getPostById = (id) => async (dispatch) => {
     console.log("lấy 1 bai dang");
   } catch (error) {
     console.log("Lỗi khi lấy 1 bài đăng");
+    dispatch(
+      setError(
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+          ? error.message
+          : "An unexpected error has occured. Please try again later."
+      )
+    );
+  }
+};
+
+export const createPost = (newPost) => async (dispatch, getState) => {
+  dispatch(setLoading(true));
+  const {
+    user: { userInfo },
+  } = getState();
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.accessToken}`,
+        "Content-Type": "application/json",
+      },
+    };
+    const reqBody = { newPost };
+    const { data } = await axios.patch(
+      `${import.meta.env.VITE_BASE_URL}/api/posts/new`,
+      reqBody,
+      config
+    );
+    // console.log(data);
+    console.log("Đăng bài");
+    dispatch(setIsLike(!isLike));
+  } catch (error) {
     dispatch(
       setError(
         error.response && error.response.data.message
@@ -219,7 +253,6 @@ export const getFavoriteList = (postId) => async (dispatch, getState) => {
 };
 
 export const updateFavorite = (postId) => async (dispatch, getState) => {
-  dispatch(setLoading(true));
   const {
     user: { userInfo },
     post: { isLike },

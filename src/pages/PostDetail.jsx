@@ -14,7 +14,7 @@ import React, { useEffect } from "react";
 import { AiOutlineEye } from "react-icons/ai";
 
 import { useDispatch, useSelector } from "react-redux";
-import { Link as ReactLink, useParams } from "react-router-dom";
+import { Link as ReactLink, useNavigate, useParams } from "react-router-dom";
 import PostImages from "../components/PostDetail/PostImages.jsx";
 import LikeButton from "../components/Posts/LikeButton.jsx";
 import RatingSystem from "../components/Rating/RatingSystem.jsx";
@@ -23,6 +23,7 @@ import PostReviews from "../layouts/ProductReviews/PostReviews.jsx";
 import { getPostById } from "../redux/actions/postActions.js";
 import numberWithCommas from "../utils/numberWithCommas.js";
 import LoadingList from "../components/Admin/LoadingList.jsx";
+import { EditIcon } from "@chakra-ui/icons";
 
 const PostDetail = () => {
   const { id } = useParams();
@@ -32,8 +33,7 @@ const PostDetail = () => {
   const { loading, error, singlePost } = post;
   const user = useSelector((state) => state.user);
   const { userInfo } = user;
-
-  const views = 10;
+  const navigate = useNavigate();
   const numOfcomment = 4;
 
   useEffect(() => {
@@ -51,16 +51,29 @@ const PostDetail = () => {
   }
   return (
     <>
-      {loading && <LoadingList />}
+      {/* {loading && <LoadingList />} */}
       {error && <Text>{error}</Text>}
       {!loading && postInfo && (
         <Box width={"80%"} mx={"auto"} padding={8} my={"32px"}>
           <Flex gap={8}>
             <PostImages images={images} />
             <Box width={"48%"}>
-              <Heading fontSize={"26px"} color={"#453227"}>
-                {postInfo.title}
-              </Heading>
+              <Flex justifyContent={"space-between"}>
+                <Heading fontSize={"26px"} color={"#453227"}>
+                  {postInfo.title}
+                </Heading>
+                {userInfo.user.id === author.id && (
+                  <Button
+                    ml={"10px"}
+                    leftIcon={<EditIcon />}
+                    colorScheme="teal"
+                    variant={"outline"}
+                    onClick={() => navigate(`/posts/update/${postInfo.id}`)}
+                  >
+                    Chỉnh sửa
+                  </Button>
+                )}
+              </Flex>
               <Flex padding={"12px"} alignItems={"center"}>
                 <Flex height={"32px"} gap="10px" alignItems={"center"}>
                   <Flex>

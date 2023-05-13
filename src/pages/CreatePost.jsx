@@ -3,42 +3,54 @@ import {
   Button,
   Flex,
   FormControl,
-  FormLabel,
   FormErrorMessage,
-  Heading,
-  IconButton,
-  Input,
-  InputGroup,
-  InputRightElement,
-  Text,
-  NumberInput,
-  NumberInputField,
-  Select,
-  RadioGroup,
-  Radio,
+  FormHelperText,
+  FormLabel,
   Grid,
   GridItem,
-  NumberInputStepper,
-  NumberIncrementStepper,
+  Heading,
+  Input,
   NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  Radio,
+  RadioGroup,
+  Select,
   Textarea,
+  useToast,
 } from "@chakra-ui/react";
-// import { NumberFormat }  from "react-number-format";
-import { Field, Form, Formik, useFormik } from "formik";
-import { useState, useEffect } from "react";
+import { Field, Form, Formik } from "formik";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-import * as Yup from "yup";
 import axios from "axios";
+import moment from "moment";
 import React from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import moment from "moment";
+import * as Yup from "yup";
+import FilesDropzone from "../components/Posts/FilesDropzone";
 
 const CreatePost = () => {
   const [province, setProvince] = useState([]);
   const [district, setDistrict] = useState([]);
   const [commune, setCommune] = useState([]);
   const [endDatee, setEndDatee] = useState(moment().add(7, "days").toDate());
+  const navigate = useNavigate();
+  const toast = useToast();
+
+  const handleSubmit = (values) => {
+    console.log(values);
+    toast({
+      description: "Bài đăng đang chờ admin xét duyệt",
+      status: "success",
+      isClosable: true,
+      position: "top",
+    });
+    navigate("/");
+  };
 
   useEffect(() => {
     const fetchProvince = async () => {
@@ -65,6 +77,11 @@ const CreatePost = () => {
   };
 
   const handleEndDateeChange = (date) => {
+    if (date != moment().add(7, "days").toDate()) setEndDatee(date);
+    else setEndDatee(moment().add(7, "days").toDate());
+  };
+
+  const handleEndDateSelect = (date) => {
     setEndDatee(date);
   };
 
@@ -76,7 +93,7 @@ const CreatePost = () => {
         ["Chó", "Mèo", "Chuột Hamster", "Khác"],
         "Vui lòng chọn trường này"
       ),
-    genre: Yup.string()
+    gender: Yup.string()
       .required("Vui lòng chọn trường này")
       .oneOf(["Đực", "Cái"], "Vui lòng chọn trường này"),
     weight: Yup.number()
@@ -85,22 +102,21 @@ const CreatePost = () => {
     age: Yup.number()
       .required("Vui lòng chọn trường này")
       .positive("Tuổi phải là một số dương"),
+    quantity: Yup.number()
+      .required("Vui lòng chọn trường này")
+      .positive("Tuổi phải là một số dương"),
     price: Yup.number()
       .required("Vui lòng chọn trường này")
       .positive("Tuổi phải là một số dương"),
-    vaccination: Yup.string()
-      .required("Vui lòng chọn trường này")
-      .oneOf(["true", "false"], "Vui lòng chọn trường này"),
+    vaccination: Yup.boolean().required("Vui lòng chọn trường này"),
     description: Yup.string().required("Vui lòng nhập trường này"),
     province: Yup.string().required("Vui lòng nhập trường này"),
     district: Yup.string().required("Vui lòng nhập trường này"),
     commune: Yup.string().required("Vui lòng nhập trường này"),
     address: Yup.string().required("Vui lòng nhập trường này"),
-    // endDate: Yup
-    //         .date()
-    //         .required('Vui lòng chọn ngày kết thúc')
-    //         .min(new Date(), 'Thời gian kết thúc phải không nhỏ hơn ngày hiện tại')
-    endDate: Yup.string().required("Vui lòng chọn trường này"),
+    images: Yup.array()
+      .min(3, "Upload tối thiểu 3 ảnh, vui lòng tải lại tối thiểu 3 ảnh")
+      .required("Vui lòng đăng ảnh minh họa"),
   });
 
   return (
@@ -119,32 +135,36 @@ const CreatePost = () => {
         <Formik
           initialValues={{
             title: "",
-            species: "",
-            genre: "",
-            weight: "",
-            age: "",
-            price: "",
-            vaccination: "",
-            description: "",
             province: "",
             district: "",
             commune: "",
             address: "",
-            endDate: "",
-            image: [],
+            species: "Mèo",
+            quantity: "",
+            gender: "",
+            price: "",
+            weight: "",
+            age: "",
+            vaccination: false,
+            description: "",
+            images: [],
+            endDate: moment().add(7, "days").toDate().toString(),
           }}
-          onSubmit={async (values) => {
-            console.log(values);
-            // try {
-            //   const response = await axios.post("", values);
-            //   console.log(response);
-            // } catch (error) {
-            //   console.log(error);
-            // }
+          onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+            handleSubmit(values);
           }}
           validationSchema={validationSchema}
         >
-          {(props) => (
+          {({
+            values,
+            errors,
+            touched,
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            isSubmitting,
+            setFieldValue,
+          }) => (
             <Form>
               <Field name="title">
                 {({ field, form }) => (
@@ -169,7 +189,6 @@ const CreatePost = () => {
                   >
                     <FormLabel>Loại thú cưng</FormLabel>
                     <Select
-                      defaultValue={"mèo"}
                       onChange={(e) =>
                         form.setValues({
                           ...form.values,
@@ -188,18 +207,48 @@ const CreatePost = () => {
                 )}
               </Field>
 
-              <Field name="genre">
+              <Field name="quantity">
                 {({ field, form }) => (
                   <FormControl
                     isRequired
-                    isInvalid={form.errors.genre && form.touched.genre}
+                    isInvalid={form.errors.quantity && form.touched.quantity}
+                    mb={"4"}
+                  >
+                    <FormLabel>Số lượng </FormLabel>
+                    <NumberInput
+                      value={form.values.quantity}
+                      onChange={(valueNumber) =>
+                        form.setValues({
+                          ...form.values,
+                          quantity: valueNumber,
+                        })
+                      }
+                      min={1}
+                      step={1}
+                    >
+                      <NumberInputField />
+                      <NumberInputStepper>
+                        <NumberIncrementStepper />
+                        <NumberDecrementStepper />
+                      </NumberInputStepper>
+                    </NumberInput>
+                    <FormErrorMessage>{form.errors.quantity}</FormErrorMessage>
+                  </FormControl>
+                )}
+              </Field>
+
+              <Field name="gender">
+                {({ field, form }) => (
+                  <FormControl
+                    isRequired
+                    isInvalid={form.errors.gender && form.touched.gender}
                     mb={"4"}
                   >
                     <FormLabel>Giới tính</FormLabel>
                     <RadioGroup
                       {...field}
                       onChange={(value) =>
-                        form.setValues({ ...form.values, genre: value })
+                        form.setValues({ ...form.values, gender: value })
                       }
                     >
                       <Radio value="Đực">Giống đực</Radio>
@@ -207,7 +256,7 @@ const CreatePost = () => {
                         Giống cái
                       </Radio>
                     </RadioGroup>
-                    <FormErrorMessage>{form.errors.genre}</FormErrorMessage>
+                    <FormErrorMessage>{form.errors.gender}</FormErrorMessage>
                   </FormControl>
                 )}
               </Field>
@@ -257,7 +306,7 @@ const CreatePost = () => {
                         isInvalid={form.errors.age && form.touched.age}
                         mb={"4"}
                       >
-                        <FormLabel>Tuổi </FormLabel>
+                        <FormLabel>Tuổi (tháng)</FormLabel>
 
                         <NumberInput
                           // {...field}
@@ -321,21 +370,15 @@ const CreatePost = () => {
                     <FormLabel>Tiêm phòng</FormLabel>
                     <RadioGroup
                       {...field}
-                      onChange={(value) =>
-                        form.setValues({ ...form.values, vaccination: value })
-                      }
+                      onChange={(value) => {
+                        form.setValues({
+                          ...form.values,
+                          vaccination: value === "true" ? true : false,
+                        });
+                      }}
                     >
-                      {/* <Grid templateColumns={'repeat(3, 1fr'}>
-                                               <GridItem>
-                                                   <Radio value="1">Đã tiêm chủng</Radio>
-                                               </GridItem>
-                                               <GridItem>
-                                                   <Radio value="0">Chưa tiêm chủng</Radio>
-                                               </GridItem>
-                                               
-                                           </Grid> */}
-                      <Radio value="true">Đã tiêm chủng</Radio>
-                      <Radio value="false" pl={"30%"}>
+                      <Radio value={true}>Đã tiêm chủng</Radio>
+                      <Radio value={false} pl={"30%"}>
                         Chưa tiêm chủng
                       </Radio>
                     </RadioGroup>
@@ -497,18 +540,39 @@ const CreatePost = () => {
                     <FormLabel>Thời gian kết thúc hiển thị</FormLabel>
                     <DatePicker
                       selected={endDatee}
-                      // onChange={(value) => form.setValues({...form.values, endDate: value})}
                       onChange={(date) => {
                         handleEndDateeChange(date);
-                        form.setValues({
-                          ...form.values,
-                          endDate: date.toString(),
-                        });
+                        form.setValues({ ...form.values, endDate: date });
+                      }}
+                      onSelect={(date) => {
+                        handleEndDateSelect(date);
+                        form.setValues({ ...form.values, endDate: date });
                       }}
                       minDate={moment().toDate()}
                       dateFormat="dd/MM/yyyy"
                     />
+                    <FormHelperText>
+                      Sau thời gian trên bài đăng sẽ hết hạn
+                    </FormHelperText>
                     <FormErrorMessage>{form.errors.endDate}</FormErrorMessage>
+                  </FormControl>
+                )}
+              </Field>
+
+              <Field name="images">
+                {({ field, form }) => (
+                  <FormControl
+                    isRequired
+                    isInvalid={form.errors.images && form.touched.images}
+                    mb={"4"}
+                  >
+                    <FormLabel>Ảnh</FormLabel>
+                    <FilesDropzone
+                      onUploaded={(e) => {
+                        form.setValues({ ...form.values, images: e });
+                      }}
+                    />
+                    <FormErrorMessage>{form.errors.images}</FormErrorMessage>
                   </FormControl>
                 )}
               </Field>

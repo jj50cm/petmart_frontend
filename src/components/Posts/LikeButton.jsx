@@ -9,7 +9,7 @@ import {
 } from "../../redux/actions/postActions";
 const LikeButton = ({ postId }) => {
   const dispatch = useDispatch();
-  const { isLike, error } = useSelector((state) => state.post);
+  const { isLike, error, loading } = useSelector((state) => state.post);
   const toast = useToast();
   useEffect(() => {
     dispatch(getFavoriteList(postId));
@@ -31,6 +31,7 @@ const LikeButton = ({ postId }) => {
   return (
     <Tooltip label={isLike ? "Đã thích" : "Thêm vào danh sách yêu thích"}>
       <Button
+        isLoading={loading}
         onClick={() => handleToggleLike()}
         bgColor={isLike ? "red.500" : "red.100"}
         color={"white"}
