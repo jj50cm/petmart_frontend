@@ -6,6 +6,10 @@ export const initialState = {
   postList: null,
   showPostList: null,
   singlePost: null,
+  isApprovedPost: false,
+  createdPostList: null,
+  favouritePostList: null,
+   // xác thực bài đăng
 };
 
 export const postSlice = createSlice({
@@ -34,6 +38,24 @@ export const postSlice = createSlice({
       state.error = payload;
       state.loading = false;
     },
+
+    // xác thực bài đăng
+    setIsApprovedPost: (state, { payload }) => {
+      state.isApprovedPost = payload;
+      state.error = null;
+    },
+
+    setCreatedPostList: (state, { payload }) => {
+      state.createdPostList = payload;
+      state.error = null;
+      state.loading = false;
+    },
+
+    setFavouritePostList: (state, { payload }) => {
+      state.favouritePostList = payload;
+      state.error = null;
+      state.loading = false;
+    },
   },
 });
 
@@ -43,6 +65,9 @@ export const {
   setPostList,
   setSinglePost,
   setShowPostList,
+  setIsApprovedPost,
+  setCreatedPostList,
+  setFavouritePostList,
 } = postSlice.actions;
 
 export default postSlice.reducer;

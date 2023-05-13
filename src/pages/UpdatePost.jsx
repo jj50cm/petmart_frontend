@@ -147,7 +147,6 @@ const UpdatePost = () => {
 
     fetchProvince();
 
-
     dispatch(getPostById(id));
   }, []);
 
@@ -167,7 +166,7 @@ const UpdatePost = () => {
     let defaultProvince = singlePost.post.province;
     let defaultDistrict = singlePost.post.district;
     let defaultEndDate = singlePost.post.endDate;
-    let defaultDate = moment().add(7, "days").toDate(); // d
+    let defaultDate = moment().add(7, "days").toDate(); // ngày mặc địch 7 ngày sau ngày đăng
 
     let sampleProvince = province.find((p) => p.Name === defaultProvince);
 

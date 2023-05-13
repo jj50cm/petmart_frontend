@@ -92,7 +92,7 @@ const PostDetail = () => {
                         <Flex height={"32px"} gap="10px" alignItems={"center"}>
                            <Flex>
                               <Text mr={"4px"} color={"pink.500"}>
-                                 {postInfo.star.toString()}
+                                 {postInfo.star && postInfo.star.toString()}
                               </Text>
                               <RatingSystem rating={4} />
                            </Flex>
