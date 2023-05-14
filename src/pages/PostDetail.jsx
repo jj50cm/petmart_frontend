@@ -10,7 +10,7 @@ import {
   Spacer,
   Text,
 } from "@chakra-ui/react";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { AiOutlineEye } from "react-icons/ai";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -26,6 +26,8 @@ import LoadingList from "../components/Admin/LoadingList.jsx";
 import { EditIcon } from "@chakra-ui/icons";
 
 const PostDetail = () => {
+  const [postInfo, setPostInfo] = useState(null);
+  const [creator, setCreator] = useState(null);
   const { id } = useParams();
 
   const dispatch = useDispatch();
@@ -39,16 +41,14 @@ const PostDetail = () => {
   useEffect(() => {
     dispatch(getPostById(id));
   }, []);
+  useEffect(() => {
+    console.log(singlePost);
+    if (singlePost) {
+      setPostInfo(singlePost.post);
+      setCreator(singlePost.creator);
+    }
+  }, [singlePost]);
 
-  let postInfo = null;
-  let author = null;
-  let images = [];
-  if (singlePost) {
-    postInfo = singlePost.post;
-    images = postInfo.images;
-    author = singlePost.creator;
-    //  console.log(singlePost);
-  }
   return (
     <>
       {/* {loading && <LoadingList />} */}
@@ -56,13 +56,13 @@ const PostDetail = () => {
       {!loading && postInfo && (
         <Box width={"80%"} mx={"auto"} padding={8} my={"32px"}>
           <Flex gap={8}>
-            <PostImages images={images} />
+            <PostImages images={postInfo.images} />
             <Box width={"48%"}>
               <Flex justifyContent={"space-between"}>
-                <Heading fontSize={"26px"} color={"#453227"}>
+                <Heading fontSize={"32px"} color={"#453227"}>
                   {postInfo.title}
                 </Heading>
-                {userInfo.user.id === author.id && (
+                {userInfo && userInfo.user.id === author.id && (
                   <Button
                     ml={"10px"}
                     leftIcon={<EditIcon />}
@@ -122,10 +122,10 @@ const PostDetail = () => {
                   <Link
                     color={"green.400"}
                     as={ReactLink}
-                    to={`/author/${author.id}`}
+                    to={`/author/${creator.id}`}
                     ml={"6px"}
                   >
-                    {author.username}
+                    {creator.username}
                   </Link>
                 </Text>
               </Flex>

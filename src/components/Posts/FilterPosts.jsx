@@ -105,7 +105,11 @@ const FilterPosts = () => {
   }, []);
 
   return (
-    <Box flexBasis={"20%"} mr={"10px"} mb={{ sm: "10px" }}>
+    <Box
+      flexBasis={"20%"}
+      mr={{ base: "0px", md: "10px" }}
+      mb={{ base: "10px" }}
+    >
       <Flex flexDirection={"column"} gap={"16px"}>
         <Box>
           <Searbar />

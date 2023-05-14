@@ -41,11 +41,16 @@ function SinglePost({ post }) {
             rounded={"md"}
           ></Image>
         </Link>
-        <Flex justifyContent={"space-between"} mt={"4px"} color={"gray.500"}>
+        <Flex
+          fontSize={{ base: "12px", md: "12px", lg: "14px", xl: "16px" }}
+          justifyContent={"space-between"}
+          mt={"4px"}
+          color={"gray.500"}
+        >
           <Text>{species}</Text>
           <HStack>
             <Icon as={CiLocationOn}></Icon>
-            <Text>{province}</Text>
+            <Text ml={0}>{province}</Text>
           </HStack>
         </Flex>
         <Heading
@@ -58,11 +63,22 @@ function SinglePost({ post }) {
             color: "green.500",
           }}
         >
-          <Link as={ReactLink} to={`/posts/${id}`}>
+          <Link
+            as={ReactLink}
+            to={`/posts/${id}`}
+            fontSize={{
+              base: "14px",
+              md: "16px",
+              lg: "18px",
+            }}
+          >
             {title}
           </Link>
         </Heading>
-        <HStack color={"gray.500"}>
+        <HStack
+          color={"gray.500"}
+          fontSize={{ base: "12px", md: "12px", lg: "14px", xl: "16px" }}
+        >
           <Text>By</Text>
           <Text color={"green.400"}>{author}</Text>
         </HStack>
@@ -74,8 +90,7 @@ function SinglePost({ post }) {
           <Spacer />
           <Box
             fontSize={{
-              base: "12px",
-              sm: "12px",
+              base: "10px",
               md: "12px",
               lg: "14px",
             }}
