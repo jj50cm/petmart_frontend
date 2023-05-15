@@ -9,6 +9,8 @@ import {
   setReviews,
   setShowPostList,
   setSinglePost,
+  setCreatedPostList,
+  setFavouritePostList,
 } from "../slices/post";
 import { checkPostId } from "../../utils/checkPostId";
 
@@ -363,3 +365,68 @@ export const reviewPost = (newRating) => async (dispatch, getState) => {
     );
   }
 };
+
+export const getFavouritePosts = (id) => async (dispatch) => {
+  dispatch(setLoading(true));
+  try {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const { data } = await axios.get(
+      `${import.meta.env.VITE_BASE_URL}/api/users/${id}/favorite`,
+      config
+    );
+   
+    //const { posts } = data;
+
+    dispatch(setFavouritePostList(data.user.posts));
+
+    console.log("lấy bài viết đã thích");
+  } catch (error) {
+    console.log("Lỗi khi lấy bài viết yêu thích");
+    dispatch(
+      setError(
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+          ? error.message
+          : "An unexpected error has occured. Please try again later."
+      )
+    );
+  }
+};
+
+// lấy bài viết đã đăng
+export const getCreatedPosts = (id) => async (dispatch) => {
+  dispatch(setLoading(true));
+  try {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const { data } = await axios.get(
+      `${import.meta.env.VITE_BASE_URL}/api/users/${id}/posts`,
+      config
+    );
+    const { posts } = data;
+   
+    dispatch(setCreatedPostList(data.user.posts));
+
+    console.log("lấy bài viết đã tạo");
+  } catch (error) {
+    console.log("Lỗi khi lấy bài viết đã tạo");
+    dispatch(
+      setError(
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+          ? error.message
+          : "An unexpected error has occured. Please try again later."
+      )
+    );
+  }
+};
+

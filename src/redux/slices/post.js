@@ -11,6 +11,8 @@ export const initialState = {
   isLike: false,
   isReview: false,
   reviews: [],
+  createdPostList: null,
+  favouritePostList: null,
 };
 
 export const postSlice = createSlice({
@@ -66,6 +68,18 @@ export const postSlice = createSlice({
       state.error = payload;
       state.loading = false;
     },
+
+    setCreatedPostList: (state, { payload }) => {
+      state.createdPostList = payload;
+      state.error = null;
+      state.loading = false;
+    },
+
+    setFavouritePostList: (state, { payload }) => {
+      state.favouritePostList = payload;
+      state.error = null;
+      state.loading = false;
+    },
   },
 });
 
@@ -80,6 +94,8 @@ export const {
   setIsLike,
   setReviews,
   setIsReview,
+  setCreatedPostList,
+  setFavouritePostList,
 } = postSlice.actions;
 
 export default postSlice.reducer;
