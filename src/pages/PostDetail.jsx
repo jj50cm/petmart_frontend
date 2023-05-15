@@ -62,7 +62,7 @@ const PostDetail = () => {
       });
     }
   }, [error]);
-
+  console.log(singlePost);
   return (
     <>
       {loading && <LoadingList />}
@@ -146,10 +146,8 @@ const PostDetail = () => {
               </Flex>
 
               <Flex justifyContent={"space-between"} color={"gray.600"}>
-                <Text>
-                  {" "}
-                  <Text as={"span"}>Loại thú cưng :</Text> {postInfo.species}
-                </Text>
+                <Text as={"span"}>Loại thú cưng : {postInfo.species}</Text>
+                <Text as={"span"}>Số lượng : {postInfo.quantity}</Text>
               </Flex>
               <HStack mt={4} color={"gray.600"} fontSize={"15px"}>
                 <Icon as={AiOutlineEye} />
