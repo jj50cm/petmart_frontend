@@ -27,7 +27,7 @@ const LikeButton = ({ postId }) => {
       });
     }
   };
-  console.log("Trang thai bai dang", isLike);
+  // console.log("Trang thai bai dang", isLike);
   return (
     <Tooltip label={isLike ? "Đã thích" : "Thêm vào danh sách yêu thích"}>
       <Button

@@ -9,6 +9,7 @@ import {
   Link,
   Spacer,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { AiOutlineEye } from "react-icons/ai";
@@ -24,11 +25,13 @@ import { getPostById } from "../redux/actions/postActions.js";
 import numberWithCommas from "../utils/numberWithCommas.js";
 import LoadingList from "../components/Admin/LoadingList.jsx";
 import { EditIcon } from "@chakra-ui/icons";
+import ReviewPost from "../components/ReviewPost/ReviewPost.jsx";
 
 const PostDetail = () => {
   const [postInfo, setPostInfo] = useState(null);
   const [creator, setCreator] = useState(null);
   const { id } = useParams();
+  const toast = useToast();
 
   const dispatch = useDispatch();
   const post = useSelector((state) => state.post);
@@ -41,18 +44,29 @@ const PostDetail = () => {
   useEffect(() => {
     dispatch(getPostById(id));
   }, []);
+
   useEffect(() => {
-    console.log(singlePost);
+    // console.log(singlePost);
     if (singlePost) {
       setPostInfo(singlePost.post);
       setCreator(singlePost.creator);
     }
   }, [singlePost]);
+  useEffect(() => {
+    if (error) {
+      toast({
+        description: error,
+        status: "error",
+        isClosable: true,
+        position: "top",
+      });
+    }
+  }, [error]);
 
   return (
     <>
-      {/* {loading && <LoadingList />} */}
-      {error && <Text>{error}</Text>}
+      {loading && <LoadingList />}
+      {/* {error && <Text>{error}</Text>} */}
       {!loading && postInfo && (
         <Box width={"80%"} mx={"auto"} padding={8} my={"32px"}>
           <Flex gap={8}>
@@ -62,7 +76,8 @@ const PostDetail = () => {
                 <Heading fontSize={"32px"} color={"#453227"}>
                   {postInfo.title}
                 </Heading>
-                {userInfo && userInfo.user.id === author.id && (
+                {/* Nếu user hiện tại là tác giả bài viết */}
+                {userInfo && userInfo.user.id === creator.id && (
                   <Button
                     ml={"10px"}
                     leftIcon={<EditIcon />}

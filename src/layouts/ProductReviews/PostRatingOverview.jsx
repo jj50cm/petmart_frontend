@@ -48,7 +48,7 @@ const PostRatingOverview = () => {
         <Text fontWeight={"600"} fontSize={"20px"} color={"#ee4d2d"}>
           {" "}
           <Text as={"span"} fontSize={"26px"}>
-            {star}
+            {star || 0}
           </Text>{" "}
           trên 5
         </Text>

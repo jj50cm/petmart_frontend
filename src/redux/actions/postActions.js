@@ -2,9 +2,11 @@ import axios from "axios";
 import {
   setError,
   setIsLike,
+  setIsReview,
   setLoading,
   setPostList,
   setPostsCount,
+  setReviews,
   setShowPostList,
   setSinglePost,
 } from "../slices/post";
@@ -119,8 +121,8 @@ export const getPosts =
           "Content-Type": "application/json",
         },
       };
-      console.log(filterParams);
-      console.log(currentPage);
+      // console.log(filterParams);
+      // console.log(currentPage);
 
       const { data } = await axios.get(
         `${
@@ -132,11 +134,11 @@ export const getPosts =
       console.log(`/api/posts/?${filterParams}&page=${currentPage}`);
       // console.log(posts);
       // cập nhật tổng số bài đăng
-      console.log(data);
+      // console.log(data);
       dispatch(setPostsCount(totalPosts));
       dispatch(setShowPostList(posts));
       dispatch(setPostList(posts));
-      console.log("lấy posts");
+      // console.log("lấy posts");
     } catch (error) {
       console.log("Lỗi khi lọc posts");
       dispatch(
@@ -273,6 +275,82 @@ export const updateFavorite = (postId) => async (dispatch, getState) => {
     // console.log(data);
     console.log("cập nhật like");
     dispatch(setIsLike(!isLike));
+  } catch (error) {
+    dispatch(
+      setError(
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+          ? error.message
+          : "An unexpected error has occured. Please try again later."
+      )
+    );
+  }
+};
+
+export const getReviews = () => async (dispatch, getState) => {
+  const {
+    post: { singlePost },
+  } = getState();
+  const postId = singlePost.post.id;
+  try {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const { data } = await axios.get(
+      `${import.meta.env.VITE_BASE_URL}/api/posts/${postId}/review`,
+      config
+    );
+    const { reviews } = data;
+    dispatch(setReviews(reviews));
+    console.log("lấy ds danh gia");
+  } catch (error) {
+    console.log("Lỗi khi lấy danh sách đánh giá");
+    dispatch(
+      setError(
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+          ? error.message
+          : "An unexpected error has occured. Please try again later."
+      )
+    );
+  }
+};
+
+export const reviewPost = (newRating) => async (dispatch, getState) => {
+  // dispatch(setLoading(true));
+  const {
+    user: { userInfo },
+    post: { singlePost },
+  } = getState();
+  const postID = singlePost.post.id;
+  const newReview = {
+    review: {
+      creator: userInfo.user.id,
+      rating: newRating.rating,
+      message: newRating.message,
+    },
+  };
+  // console.log(newReview);
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.accessToken}`,
+        "Content-Type": "application/json",
+      },
+    };
+    const reqBody = newReview;
+    const { data } = await axios.post(
+      `${import.meta.env.VITE_BASE_URL}/api/posts/${postID}/review`,
+      reqBody,
+      config
+    );
+    console.log(data);
+    console.log("Gửi review");
+    dispatch(setIsReview(true));
   } catch (error) {
     dispatch(
       setError(
