@@ -3,14 +3,19 @@ import { createSlice } from "@reduxjs/toolkit";
 export const initialState = {
   loading: false,
   error: null,
-  postList: null,
-  showPostList: null,
+  postList: null, // ở trang chủ
+  showPostList: null, // ở trang chủ
   singlePost: null,
-  postsCount: 0,
+  creator: null,
+  adminPostList: null, // ở trang ds của admin
+  showAdminPostList: null, // ở trang ds của admin
+  postsCount: 0, // tổng số bài đăng
   filterParams: "",
   isLike: false,
   isReview: false,
   reviews: [],
+  createdPostList: null,
+  favouritePostList: null,
 };
 
 export const postSlice = createSlice({
@@ -41,8 +46,23 @@ export const postSlice = createSlice({
       state.error = null;
       state.loading = false;
     },
+    setCreator: (state, { payload }) => {
+      state.creator = payload;
+      state.error = null;
+      state.loading = false;
+    },
     setFilterParams: (state, { payload }) => {
       state.filterParams = payload;
+      state.error = null;
+      state.loading = false;
+    },
+    setAdminPostList: (state, { payload }) => {
+      state.adminPostList = payload;
+      state.error = null;
+      state.loading = false;
+    },
+    setShowAdminPostList: (state, { payload }) => {
+      state.showAdminPostList = payload;
       state.error = null;
       state.loading = false;
     },
@@ -61,9 +81,18 @@ export const postSlice = createSlice({
       state.error = null;
       state.loading = false;
     },
-
     setError: (state, { payload }) => {
       state.error = payload;
+      state.loading = false;
+    },
+    setCreatedPostList: (state, { payload }) => {
+      state.createdPostList = payload;
+      state.error = null;
+      state.loading = false;
+    },
+    setFavouritePostList: (state, { payload }) => {
+      state.favouritePostList = payload;
+      state.error = null;
       state.loading = false;
     },
   },
@@ -80,6 +109,11 @@ export const {
   setIsLike,
   setReviews,
   setIsReview,
+  setAdminPostList,
+  setShowAdminPostList,
+  setCreator,
+  setCreatedPostList,
+  setFavouritePostList,
 } = postSlice.actions;
 
 export default postSlice.reducer;

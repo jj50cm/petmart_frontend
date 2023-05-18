@@ -15,6 +15,7 @@ import ProfilePage from "./pages/ProfilePage";
 import UserAccountList from "./pages/Admin/UserAccountList";
 import AdminPostList from "./pages/Admin/PostList";
 import UpdatePost from "./pages/UpdatePost";
+import AdminPostDetail from "./components/Admin/AdminPostDetail";
 
 // router and routes
 const router = createBrowserRouter(
@@ -29,6 +30,7 @@ const router = createBrowserRouter(
       <Route path="posts/update/:id" element={<UpdatePost />} />
       <Route path="admin/users" element={<UserAccountList />}></Route>
       <Route path="admin/posts" element={<AdminPostList />}></Route>
+      <Route path="admin/posts/:id" element={<AdminPostDetail />}></Route>
       {/* <Route index element={<LoginPage />} /> */}
     </Route>
   )

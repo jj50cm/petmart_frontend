@@ -32,6 +32,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import * as Yup from "yup";
 import FilesDropzone from "../components/Posts/FilesDropzone";
+import { useDispatch, useSelector } from "react-redux";
+import { createPost } from "../redux/actions/postActions";
 
 const CreatePost = () => {
   const [province, setProvince] = useState([]);
@@ -40,16 +42,19 @@ const CreatePost = () => {
   const [endDatee, setEndDatee] = useState(moment().add(7, "days").toDate());
   const navigate = useNavigate();
   const toast = useToast();
+  const dispatch = useDispatch();
+  const { loading, error } = useSelector((state) => state.post);
 
   const handleSubmit = (values) => {
-    console.log(values);
+    dispatch(createPost(values));
+    console.log(error);
     toast({
-      description: "Bài đăng đang chờ admin xét duyệt",
+      description: "Bài đăng của bạn đang chờ admin xét duyệt",
       status: "success",
       isClosable: true,
       position: "top",
     });
-    navigate("/");
+    // navigate("/");
   };
 
   useEffect(() => {

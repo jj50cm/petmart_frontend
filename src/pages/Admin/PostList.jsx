@@ -1,85 +1,87 @@
 import {
-   Box,
-   Flex,
-   Heading,
-   Tab,
-   TabList,
-   TabPanels,
-   Tabs,
+  Box,
+  Flex,
+  Heading,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AdminAccountTable from "../../components/Admin/AdminAccountTable";
 import AdminPostTable from "../../components/Admin/AdminPostsTable";
-const postList = [ {
-   "id": "6454d521e932790c404c3b2b",
-   "title": "Bán mèo béo",
-   "createdDate": "2023-05-05T10:06:25.000Z",
-   "description": "Mèo nhà vàng",
-   "isApproved": false,
-   "available": false,
-   "province": "Bắc Ninh",
-   "district": "Yên Phong",
-   "commune": "Văn Môn",
-   "address": "thôn Mẫn Xá",
-   "price": 1000000,
-   "species": "Mèo",
-   "gender": "Đực",
-   "age": 12,
-   "image": "https://res.cloudinary.com/bachhs/image/upload/v1683281170/places/8b844ba0-8ca6-451b-a411-e608e5e9a7cc_bt47vp.jpg",
-   "star": 0,
-   "views": 7,
-   "creator": {
-     "username": "Admin Pethub",
-     "email": "pethub@gmail.com",
-     "id": "644253d1f1c989b08f76d47b"
-   }
- }]
-const mapRole = {
-   0: "",
-   1: "seller",
-   2: "buyer",
+import { useDispatch, useSelector } from "react-redux";
+import { getAllPosts } from "../../redux/actions/postActions";
+import { setShowAdminPostList } from "../../redux/slices/post";
+import LoadingList from "../../components/Admin/LoadingList";
+
+const mapStatus = {
+  0: "",
+  1: "false",
+  2: "true",
 };
+const tableHeader = [
+  "Tên bài",
+  "Chủ sở hữu",
+  "Địa chỉ",
+  "Trạng thái",
+  "Số lượng",
+  "Lượt xem",
+  "Lượt đánh giá",
+  "Hành động",
+];
+
+const styleText = {
+  textTransform: "uppercase",
+  fontSize: "18px",
+  fontWeight: "600",
+};
+
 const AdminPostList = () => {
-   const tableHeader = [
-      "Tên bài",
-      "Chủ sở hữu",
-      "Địa chỉ",
-      "Trạng thái",
-      "Số lượng",
-      "Lượt xem",
-      "Lượt đánh giá",
-      "Hành động",
-   ];
-   const styleText = {
-      textTransform: "uppercase",
-      fontSize: "18px",
-      fontWeight: "600",
-   };
-   return (
-      <Box marginX={8} paddingTop={5} height={"calc(100vh - 76px)"}>
-         <Heading
-            fontSize={"3xl"}
-            ml={6}
-            color={"#453227"}
-            fontStyle={"italic"}
-         >
-            Danh sách bài đăng
-         </Heading>
-         <Tabs
-            padding={3}
-           
-            bgColor={"white"}
-         >
-            <TabList gap={"82px"}>
-               <Tab sx={styleText}>Tất cả</Tab>
-               <Tab sx={styleText}>Chưa duyệt</Tab>
-            </TabList>
-            <TabPanels>
-               <AdminPostTable tableHeader={tableHeader} posts={postList} />
-            </TabPanels>
-         </Tabs>
-      </Box>
-   );
+  const [tabIndex, setTabIndex] = useState(0);
+  const dispatch = useDispatch();
+  const { adminPostList, showAdminPostList, loading, error } = useSelector(
+    (state) => state.post
+  );
+
+  const handleChange = (index) => {
+    const newList = adminPostList.filter((post) => {
+      return post.isApproved.toString().includes(mapStatus[index]);
+    });
+    dispatch(setShowAdminPostList(newList));
+  };
+
+  useEffect(() => {
+    dispatch(getAllPosts());
+  }, []);
+
+  return (
+    <Box marginX={8} paddingTop={5} height={"calc(100vh - 76px)"}>
+      <Tabs
+        padding={3}
+        bgColor={"white"}
+        onChange={(index) => handleChange(index)}
+      >
+        <TabList gap={"82px"}>
+          <Tab sx={styleText}>Tất cả</Tab>
+          <Tab sx={styleText}>Chưa duyệt</Tab>
+          <Tab sx={styleText}>Đã duyệt</Tab>
+        </TabList>
+        <TabPanels>
+          {loading && <LoadingList />}
+          {error && <h2>{error}</h2>}
+
+          {!error && !loading && (
+            <AdminPostTable
+              tableHeader={tableHeader}
+              posts={showAdminPostList}
+            />
+          )}
+        </TabPanels>
+      </Tabs>
+    </Box>
+  );
 };
 
 export default AdminPostList;

@@ -102,7 +102,7 @@ function SinglePost({ post }) {
       <Divider color={"gray.300"} />
       <CardFooter justify="space-between" alignItems={"center"} p={"12px"}>
         <Text color={"green.400"} fontWeight={"700"} fontSize={"lg"}>
-          {numberWithCommas(price)}
+          {price && numberWithCommas(price)}
         </Text>
         <Button
           leftIcon={<Icon as={ViewIcon} boxSize={4}></Icon>}

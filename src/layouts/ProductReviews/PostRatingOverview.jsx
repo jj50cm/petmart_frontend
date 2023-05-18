@@ -37,6 +37,7 @@ const PostRatingOverview = () => {
       );
     });
   };
+  console.log(post);
   return (
     <Flex
       gap={8}
@@ -50,9 +51,9 @@ const PostRatingOverview = () => {
           <Text as={"span"} fontSize={"26px"}>
             {star || 0}
           </Text>{" "}
-          trên 5
+          trên 5 ✨
         </Text>
-        <RatingSystem rating={star} />
+        {/* <RatingSystem rating={star} /> */}
         {/* filled={"#ee4d2d"} size={6} */}
       </Stack>
       <Flex flexWrap={"wrap"} gap={4}>

@@ -11,47 +11,32 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
 import { AiOutlineEye } from "react-icons/ai";
 
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link as ReactLink, useNavigate, useParams } from "react-router-dom";
-import PostImages from "../components/PostDetail/PostImages.jsx";
-import LikeButton from "../components/Posts/LikeButton.jsx";
-import RatingSystem from "../components/Rating/RatingSystem.jsx";
-import PostInformation from "../layouts/ProductReviews/PostInformation.jsx";
-import PostReviews from "../layouts/ProductReviews/PostReviews.jsx";
-import { getPostById } from "../redux/actions/postActions.js";
-import numberWithCommas from "../utils/numberWithCommas.js";
-import LoadingList from "../components/Admin/LoadingList.jsx";
-import { EditIcon } from "@chakra-ui/icons";
-import ReviewPost from "../components/ReviewPost/ReviewPost.jsx";
+import { useParams, Link as ReactLink } from "react-router-dom";
+import PostInformation from "../../layouts/ProductReviews/PostInformation";
+import { approveNewPost, getPostById } from "../../redux/actions/postActions";
+import numberWithCommas from "../../utils/numberWithCommas";
+import LoadingList from "./LoadingList";
+import PostImages from "../PostDetail/PostImages";
+import RatingSystem from "../Rating/RatingSystem";
 
-const PostDetail = () => {
+const AdminPostDetail = () => {
   const [postInfo, setPostInfo] = useState(null);
-  const [creator, setCreator] = useState(null);
-  const { id } = useParams();
+  const { singlePost, creator, error, loading } = useSelector(
+    (state) => state.post
+  );
+  const params = useParams();
   const toast = useToast();
-
   const dispatch = useDispatch();
-  const post = useSelector((state) => state.post);
-  const { loading, error, singlePost } = post;
-  const user = useSelector((state) => state.user);
-  const { userInfo } = user;
-  const navigate = useNavigate();
-  const numOfcomment = 4;
-
   useEffect(() => {
-    dispatch(getPostById(id));
+    if (params) {
+      dispatch(getPostById(params.id));
+    }
   }, []);
 
-  useEffect(() => {
-    // console.log(singlePost);
-    if (singlePost) {
-      setPostInfo(singlePost.post);
-      setCreator(singlePost.creator);
-    }
-  }, [singlePost]);
   useEffect(() => {
     if (error) {
       toast({
@@ -61,13 +46,34 @@ const PostDetail = () => {
         position: "top",
       });
     }
-  }, [error]);
-  // console.log(singlePost);
+    if (!error && !loading) {
+      console.log(singlePost);
+
+      // setCreator(singlePost.creator);
+    }
+  }, [error, loading]);
+  useEffect(() => {
+    // console.log(singlePost);
+    if (singlePost) {
+      setPostInfo(singlePost.post);
+    }
+  }, [singlePost]);
+
+  const handleClick = () => {
+    dispatch(approveNewPost(params.id));
+    if (!error) {
+      toast({
+        description: "Duyệt bài thành công",
+        status: "success",
+        isClosable: true,
+        position: "top",
+      });
+    }
+  };
   return (
     <>
       {loading && <LoadingList />}
-      {error && <Heading textAlign={"center"}>{error}</Heading>}
-      {!loading && postInfo && (
+      {!loading && !error && postInfo && (
         <Box width={"80%"} mx={"auto"} padding={8} my={"32px"}>
           <Flex gap={8}>
             <PostImages images={postInfo.images} />
@@ -76,18 +82,17 @@ const PostDetail = () => {
                 <Heading fontSize={"32px"} color={"#453227"}>
                   {postInfo.title}
                 </Heading>
-                {/* Nếu user hiện tại là tác giả bài viết */}
-                {userInfo && userInfo.user.id === creator.id && (
-                  <Button
-                    ml={"10px"}
-                    leftIcon={<EditIcon />}
-                    colorScheme="teal"
-                    variant={"outline"}
-                    onClick={() => navigate(`/posts/update/${postInfo.id}`)}
-                  >
-                    Chỉnh sửa
-                  </Button>
-                )}
+                <Button
+                  isDisabled={postInfo.isApproved}
+                  backgroundColor={"blue.500"}
+                  color={"#fff"}
+                  _hover={{
+                    backgroundColor: "blue.200",
+                  }}
+                  onClick={() => handleClick()}
+                >
+                  {postInfo.isApproved ? "Đã duyệt bài" : "Duyệt bài"}
+                </Button>
               </Flex>
               <Flex padding={"12px"} alignItems={"center"}>
                 <Flex height={"32px"} gap="10px" alignItems={"center"}>
@@ -103,22 +108,16 @@ const PostDetail = () => {
                     width={"1px"}
                     bgColor={"gray.500"}
                   />
-                  <Text>
-                    {numOfcomment > 1
-                      ? `${numOfcomment} comments`
-                      : `${numOfcomment} comment`}
-                  </Text>
+
+                  <Text>0 comment</Text>
                   <Divider
                     orientation="vertical"
                     height={"20px"}
                     width={"1px"}
                     bgColor={"gray.500"}
                   />
-                  <Text>{postInfo.views} lượt xem</Text>
                 </Flex>
                 <Spacer />
-                {/* Yêu thích bài đăng */}
-                {userInfo && <LikeButton postId={postInfo.id} />}
               </Flex>
               <Heading color={"#ee4d2d"}>
                 {numberWithCommas(postInfo.price)}đ
@@ -129,7 +128,7 @@ const PostDetail = () => {
                   color={"white"}
                   _hover={{ backgroundColor: "green.400" }}
                 >
-                  Liên hệ với người bán
+                  Chat với người bán
                 </Button>
                 <Spacer />
                 <Text fontSize={"16px"}>
@@ -156,11 +155,10 @@ const PostDetail = () => {
             </Box>
           </Flex>
           <PostInformation postInfo={postInfo} />
-          <PostReviews />
         </Box>
       )}
     </>
   );
 };
 
-export default PostDetail;
+export default AdminPostDetail;
