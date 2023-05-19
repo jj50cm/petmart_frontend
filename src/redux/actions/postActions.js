@@ -30,7 +30,7 @@ export const getAllPosts = () => async (dispatch) => {
       config
     );
     const { posts, totalPosts } = data;
-    // console.log(posts);
+    console.log(posts);
     dispatch(setShowAdminPostList(posts));
     dispatch(setAdminPostList(posts));
 
@@ -135,7 +135,7 @@ export const getPosts =
       );
       const { totalPosts, posts } = data;
       console.log(`/api/posts/?${filterParams}&page=${currentPage}`);
-      // console.log(posts);
+       console.log(posts);
       // cập nhật tổng số bài đăng
       // console.log(data);
       dispatch(setPostsCount(totalPosts));

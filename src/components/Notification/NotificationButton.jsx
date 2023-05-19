@@ -52,7 +52,7 @@ export default function NotificationButton() {
           onClick={() => handleClick()}
         >
           <Icon
-            as={isOpen ? AiFillBell : AiOutlineBell}
+            //as={isOpen ? AiFillBell : AiOutlineBell}
             boxSize={5}
             ref={iconRef}
           />
