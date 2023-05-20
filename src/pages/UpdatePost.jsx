@@ -65,6 +65,7 @@ const UpdatePost = () => {
 
   // lấy id bài viết từ đường dẫn /posts/update/:id
   const { id } = useParams();
+  console.log(id);
 
   // tạo các đối tượng
   const { userInfo } = user;
@@ -80,12 +81,13 @@ const UpdatePost = () => {
     };
     fetchProvince();
     console.log("lấy tỉnh");
-    // dispatch(getPostById(id));
+    dispatch(getPostById(id));
   }, []);
 
   let postInfo = null;
   let author = null;
   let images = [];
+  let defaultFiles = [];
 
   if (singlePost) {
     postInfo = singlePost.post;
@@ -98,7 +100,8 @@ const UpdatePost = () => {
     let defaultProvince = singlePost.post.province;
     let defaultDistrict = singlePost.post.district;
     let defaultEndDate = singlePost.post.endDate;
-    let defaultDate = moment().add(7, "days").toDate(); // d
+    let defaultDate = moment().add(7, "days").toDate();
+    //let defaultFiles=[]; // d
 
     let sampleProvince = province.find((p) => p.Name === defaultProvince);
 
@@ -123,6 +126,21 @@ const UpdatePost = () => {
     //   console.log(dateObject);
     //   setEndDatee(dateObject);
     // }
+
+    for (let i = 0; i < images.length; i++) {
+      let substring = images[i].split("/");
+      let name = substring[substring.length - 1];
+      fetch(images[i])
+        .then(res => res.blob())
+        .then(blob => {
+          let objectURL = URL.createObjectURL(blob);
+          let file = new File([blob], name, { type: blob.type });
+          file.preview = objectURL;
+          defaultFiles.push(file);
+        })
+    }
+
+    console.log(defaultFiles)
   }
 
   const handleProvinceChange = (e, defaultProvince) => {
@@ -674,6 +692,7 @@ const UpdatePost = () => {
                           onUploaded={(e) => {
                             form.setValues({ ...form.values, images: e });
                           }}
+                          defaultFiles={defaultFiles}
                         />
                         <FormErrorMessage>
                           {form.errors.images}

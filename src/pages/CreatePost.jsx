@@ -623,6 +623,7 @@ const CreatePost = () => {
                       onUploaded={(e) => {
                         form.setValues({ ...form.values, images: e });
                       }}
+                      defaultFiles={[]}
                     />
                     <FormErrorMessage>{form.errors.images}</FormErrorMessage>
                   </FormControl>
