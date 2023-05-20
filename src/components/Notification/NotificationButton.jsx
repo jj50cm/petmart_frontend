@@ -10,17 +10,23 @@ import {
   Text,
   Tooltip,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import { AiOutlineBell, AiFillBell } from "react-icons/ai";
 import NotificationList from "./NotificationList";
 import { useSelector, useDispatch } from "react-redux";
 import { getNotifications } from "../../redux/actions/notificationActions";
+import { useNavigate } from "react-router-dom";
 
 export default function NotificationButton() {
   const [notificationsCount, setNotificationsCount] = useState(0);
   const dispatch = useDispatch();
-  const { numOfNewNotifications } = useSelector((state) => state.notification);
+  const { numOfNewNotifications, error } = useSelector(
+    (state) => state.notification
+  );
 
+  const toast = useToast();
+  const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const boxRef = useRef(null);
   const btnRef = useRef(null);
@@ -37,6 +43,18 @@ export default function NotificationButton() {
   useEffect(() => {
     dispatch(getNotifications());
   }, []);
+
+  useEffect(() => {
+    if (error) {
+      toast({
+        description: error,
+        status: "error",
+        position: "top",
+        isClosable: true,
+      });
+      navigate("/login");
+    }
+  }, [error]);
 
   useEffect(() => {
     setNotificationsCount(numOfNewNotifications);

@@ -8,6 +8,7 @@ import {
   setIsLike,
   setIsReview,
   setLoading,
+  setPostForNotification,
   setPostList,
   setPostsCount,
   setReviews,
@@ -173,6 +174,33 @@ export const getPostById = (id) => async (dispatch) => {
     console.log("lấy 1 bai dang");
   } catch (error) {
     console.log("Lỗi khi lấy 1 bài đăng");
+    dispatch(
+      setError(
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+          ? error.message
+          : "An unexpected error has occured. Please try again later."
+      )
+    );
+  }
+};
+export const getPostForNotifi = (id) => async (dispatch) => {
+  // dispatch(setLoading(true));
+  try {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const { data } = await axios.get(
+      `${import.meta.env.VITE_BASE_URL}/api/posts/${id}`,
+      config
+    );
+    dispatch(setPostForNotification(data));
+    console.log("lấy bai dang thong bao");
+  } catch (error) {
+    console.log("Lỗi khi lấy bai dang thong bao");
     dispatch(
       setError(
         error.response && error.response.data.message

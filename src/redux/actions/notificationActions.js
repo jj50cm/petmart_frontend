@@ -26,16 +26,7 @@ export const getNotifications = () => async (dispatch, getState) => {
       config
     );
     const { notifications } = data;
-    // sap xep lai cac thong bao
-    notifications.sort((a, b) => {
-      if (a.seen && !b.seen) {
-        return 1;
-      } else if (!a.seen && b.seen) {
-        return -1;
-      } else {
-        return 0;
-      }
-    });
+    console.log(notifications);
     // loc ra nhung thong bao moi
     const numOfNewNotifications = notifications.filter(
       (notification) => !notification.seen

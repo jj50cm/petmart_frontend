@@ -100,7 +100,7 @@ const AdminPostDetail = () => {
                     <Text mr={"4px"} color={"pink.500"}>
                       {postInfo.star && postInfo.star.toString()}
                     </Text>
-                    <RatingSystem rating={4} />
+                    <RatingSystem rating={postInfo.star} />
                   </Flex>
                   <Divider
                     orientation="vertical"

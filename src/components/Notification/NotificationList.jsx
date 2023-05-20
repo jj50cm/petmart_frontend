@@ -1,58 +1,96 @@
-import { HStack, List, ListItem, Text } from "@chakra-ui/react";
+import {
+  Button,
+  HStack,
+  List,
+  ListItem,
+  Stack,
+  Text,
+  useDisclosure,
+} from "@chakra-ui/react";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+} from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
   getNotifications,
   seenNotification,
 } from "../../redux/actions/notificationActions";
+import NotificationItem from "./NotificationItem";
+import { getPostById, getPostForNotifi } from "../../redux/actions/postActions";
+import { EmailIcon, Icon } from "@chakra-ui/icons";
+import { useEffect, useState } from "react";
+import NotificationModal from "./NotificationModal";
+import { setSinglePost } from "../../redux/slices/post";
 
 function NotificationList() {
+  const [extendDate, setExtendDate] = useState("");
+  const [post, setPost] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const { notifications } = useSelector((state) => state.notification);
+  const { postForNotification } = useSelector((state) => state.post);
+  const { userInfo } = useSelector((state) => state.user);
 
-  const handleClick = (postId, notiId, seen) => {
+  const handleClick = (postId, notiId, seen, type, extendDate) => {
+    console.log(type);
+    // lấy thông tin bài đăng
+    dispatch(getPostForNotifi(postId));
+    // nếu là yêu cầu gia hạn bài đăng
+    if (type === "EXTENDPOST" || type === "EXTENDAPPROVED") {
+      if (userInfo.user.role === "admin") {
+        // mở popup ra hạn bài đăng(đã duyệt or chưa)
+        onOpen();
+        setExtendDate(extendDate);
+      } else {
+        dispatch(getPostById(postId));
+        navigate(`/posts/${postId}`);
+      }
+    }
+    if (type === "APPROVED" || type === "ADMIN") {
+      dispatch(getPostById(postId));
+      // nếu là admin
+      if (userInfo.user.role === "admin") {
+        navigate(`/admin/posts/${postId}`);
+      } else {
+        navigate(`/posts/${postId}`);
+      }
+    }
     if (!seen) {
       dispatch(seenNotification(notiId));
       dispatch(getNotifications());
     }
-    // navigate(`/admin/posts/${postId}`);
   };
 
   return (
     <List spacing={3} padding={"8px"}>
+      {notifications && notifications.length <= 0 && (
+        <Text textAlign={"center"}>Bạn chưa có thông báo nào cả.</Text>
+      )}
       {notifications &&
+        notifications.length > 0 &&
         notifications.map((notification) => (
-          <ListItem
+          <NotificationItem
             key={notification.id}
-            _hover={{ bg: "gray.200" }}
-            borderRadius="md"
-            padding="2"
-            cursor={"pointer"}
-            bg={notification.seen ? "white" : "green.100"}
-            onClick={() =>
-              handleClick(notification.post, notification.id, notification.seen)
-            }
-          >
-            <HStack justifyContent={"space-between"}>
-              <Text
-                fontSize="md"
-                textTransform={"uppercase"}
-                fontWeight={"bold"}
-              >
-                {notification.type === "EXTENDPOST" && "Gia hạn bài đăng"}
-                {notification.type === "ADMIN" && "Bài đăng cần duyệt"}
-                {notification.type === "APPROVED" && "Bài đăng đã được duyệt"}
-                {notification.type === "EXTENDAPPROVED" &&
-                  "Bài đăng đã được gia hạn"}
-              </Text>
-              <Text fontSize="xs" color="gray.500">
-                {notification.seen ? "Seen" : "Unseen"}
-              </Text>
-            </HStack>
-            <Text>{notification.title}</Text>
-          </ListItem>
+            notification={notification}
+            openNotification={handleClick}
+          />
         ))}
+      {postForNotification && (
+        <NotificationModal
+          singlePost={postForNotification}
+          isOpen={isOpen}
+          onClose={onClose}
+          extendDate={extendDate}
+        />
+      )}
     </List>
   );
 }

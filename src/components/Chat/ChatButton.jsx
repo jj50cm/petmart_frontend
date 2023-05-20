@@ -1,11 +1,13 @@
 import { Button, Icon, Tooltip } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { BsChatText } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 
 const ChatButton = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
   const openChat = () => {
-    console.log("openChat");
+    navigate("/chat");
     setIsOpen(!isOpen);
   };
   return (

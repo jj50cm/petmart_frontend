@@ -16,9 +16,7 @@ const PostComment = ({ review }) => {
               <Text as="span" fontSize={"14px"} color={"gray.500"} mb={"10px"}>
                 {formatDate(review.createdAt)}
               </Text>
-              <Text maxWidth={"82%"} mt={2}>
-                {review.message}
-              </Text>
+              <Text mt={2}>{review.message}</Text>
             </Box>
           </Flex>
           <Divider />

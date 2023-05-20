@@ -16,22 +16,26 @@ import UserAccountList from "./pages/Admin/UserAccountList";
 import AdminPostList from "./pages/Admin/PostList";
 import UpdatePost from "./pages/UpdatePost";
 import AdminPostDetail from "./components/Admin/AdminPostDetail";
+import ChatConversation from "./components/Chat/ChatRight/ChatConversation";
+import Chat from "./pages/Chat";
 
 // router and routes
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<RootLayout />}>
       <Route index element={<HomePage />} />
-      <Route path="posts/:id" element={<PostDetail />} />
       <Route path="profile" element={<ProfilePage />} />
-      <Route path="login" element={<LoginPage />} />
       <Route path="register" element={<RegisterPage />} />
+      <Route path="login" element={<LoginPage />} />
       <Route path="create-post" element={<CreatePost />} />
+      <Route path="posts/:id" element={<PostDetail />} />
       <Route path="posts/update/:id" element={<UpdatePost />} />
       <Route path="admin/users" element={<UserAccountList />}></Route>
       <Route path="admin/posts" element={<AdminPostList />}></Route>
       <Route path="admin/posts/:id" element={<AdminPostDetail />}></Route>
-      {/* <Route index element={<LoginPage />} /> */}
+      <Route path="chat" element={<Chat />}>
+        <Route path=":userId" element={<ChatConversation />}></Route>
+      </Route>
     </Route>
   )
 );

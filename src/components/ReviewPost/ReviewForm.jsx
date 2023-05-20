@@ -16,13 +16,13 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { reviewPost } from "../../redux/actions/postActions";
+import { getPostById, reviewPost } from "../../redux/actions/postActions";
 
 const ReviewForm = ({ isOpen, onClose }) => {
   const [rating, setRating] = useState(0);
   const [message, setMessage] = useState("");
   const post = useSelector((state) => state.post);
-  const { error } = post;
+  const { error, singlePost } = post;
   const dispatch = useDispatch();
   const toast = useToast();
 
@@ -32,6 +32,7 @@ const ReviewForm = ({ isOpen, onClose }) => {
     let inputValue = e.target.value;
     setMessage(inputValue);
   };
+
   const submitReview = () => {
     const newReview = { rating, message };
     // validate trống
@@ -54,6 +55,7 @@ const ReviewForm = ({ isOpen, onClose }) => {
         isClosable: true,
         position: "top",
       });
+      dispatch(getPostById(singlePost.post.id));
     }
     // reset form
     setRating(0);

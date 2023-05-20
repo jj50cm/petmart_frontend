@@ -16,6 +16,7 @@ export const initialState = {
   reviews: [],
   createdPostList: null,
   favouritePostList: null,
+  postForNotification: null,
 };
 
 export const postSlice = createSlice({
@@ -95,6 +96,11 @@ export const postSlice = createSlice({
       state.error = null;
       state.loading = false;
     },
+    setPostForNotification: (state, { payload }) => {
+      state.postForNotification = payload;
+      state.error = null;
+      state.loading = false;
+    },
   },
 });
 
@@ -114,6 +120,7 @@ export const {
   setCreator,
   setCreatedPostList,
   setFavouritePostList,
+  setPostForNotification,
 } = postSlice.actions;
 
 export default postSlice.reducer;

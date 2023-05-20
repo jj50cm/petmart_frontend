@@ -37,7 +37,6 @@ const PostRatingOverview = () => {
       );
     });
   };
-  console.log(post);
   return (
     <Flex
       gap={8}
@@ -45,17 +44,18 @@ const PostRatingOverview = () => {
       bgColor={"pink.50"}
       border={"1px solid #f9ede5"}
     >
-      <Stack pl={"12px"}>
+      <Flex pl={"12px"} alignItems={"baseline"} gap={"4px"}>
         <Text fontWeight={"600"} fontSize={"20px"} color={"#ee4d2d"}>
           {" "}
           <Text as={"span"} fontSize={"26px"}>
             {star || 0}
           </Text>{" "}
-          trên 5 ✨
+          trên 5
         </Text>
+        <RatingIcon size={8} filled={"yellow.200"} />
         {/* <RatingSystem rating={star} /> */}
         {/* filled={"#ee4d2d"} size={6} */}
-      </Stack>
+      </Flex>
       <Flex flexWrap={"wrap"} gap={4}>
         {ratingSelections.map((rating) => {
           return (

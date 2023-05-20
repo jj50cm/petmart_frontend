@@ -48,6 +48,7 @@ const PostDetail = () => {
   useEffect(() => {
     // console.log(singlePost);
     if (singlePost) {
+      console.log("new post");
       setPostInfo(singlePost.post);
       setCreator(singlePost.creator);
     }
@@ -95,7 +96,7 @@ const PostDetail = () => {
                     <Text mr={"4px"} color={"pink.500"}>
                       {postInfo.star && postInfo.star.toString()}
                     </Text>
-                    <RatingSystem rating={4} />
+                    <RatingSystem rating={postInfo.star} />
                   </Flex>
                   <Divider
                     orientation="vertical"
@@ -108,13 +109,13 @@ const PostDetail = () => {
                       ? `${numOfcomment} comments`
                       : `${numOfcomment} comment`}
                   </Text>
-                  <Divider
+                  {/* <Divider
                     orientation="vertical"
                     height={"20px"}
                     width={"1px"}
                     bgColor={"gray.500"}
-                  />
-                  <Text>{postInfo.views} lượt xem</Text>
+                  /> */}
+                  {/* <Text>{postInfo.views} lượt xem</Text> */}
                 </Flex>
                 <Spacer />
                 {/* Yêu thích bài đăng */}
