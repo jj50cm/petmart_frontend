@@ -47,11 +47,13 @@ import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import FilesDropzone from "../components/Posts/FilesDropzone";
 import { getPostById } from "../redux/actions/postActions";
+import { speciesGenre } from "./gen";
 
 const UpdatePost = () => {
   const [province, setProvince] = useState([]);
   const [district, setDistrict] = useState([]);
   const [commune, setCommune] = useState([]);
+  const [genre, setGenre] = useState([]);
   const [endDatee, setEndDatee] = useState(moment().add(7, "days").toDate());
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -65,7 +67,6 @@ const UpdatePost = () => {
 
   // lấy id bài viết từ đường dẫn /posts/update/:id
   const { id } = useParams();
-  console.log(id);
 
   // tạo các đối tượng
   const { userInfo } = user;
@@ -101,19 +102,22 @@ const UpdatePost = () => {
     let defaultDistrict = singlePost.post.district;
     let defaultEndDate = singlePost.post.endDate;
     let defaultDate = moment().add(7, "days").toDate();
-    //let defaultFiles=[]; // d
 
     let sampleProvince = province.find((p) => p.Name === defaultProvince);
+    let defaultGenre = speciesGenre.find((s) => s.Name === postInfo.species);
 
     if (district.length == 0 && sampleProvince != undefined) {
       setDistrict(sampleProvince.Districts);
       let sampleDistrict = sampleProvince.Districts.find(
         (d) => d.Name === defaultDistrict
       );
-      console.log(sampleDistrict);
       if (commune.length == 0) {
         setCommune(sampleDistrict.Wards);
       }
+    }
+
+    if (genre && defaultGenre != undefined && genre.length == 0) {
+      setGenre(defaultGenre.Genre);
     }
 
     // endDate
@@ -139,13 +143,10 @@ const UpdatePost = () => {
           defaultFiles.push(file);
         })
     }
-
-    console.log(defaultFiles)
   }
 
   const handleProvinceChange = (e, defaultProvince) => {
     const provinceName = e.target.value;
-    console.log(provinceName);
     const result = province.find((c) => c.Name === provinceName);
     setDistrict(result.Districts);
     setCommune([]);
@@ -166,6 +167,12 @@ const UpdatePost = () => {
     setEndDatee(date);
   };
 
+  const handleSpeciesChange = (e) => {
+    const speciesName = e.target.value;
+    const result = speciesGenre.find((s) => s.Name === speciesName);
+    setGenre(result.Genre);
+  }
+
   const validationSchema = Yup.object().shape({
     title: Yup.string().required("Vui lòng nhập tiêu đề cho bài viết"),
     species: Yup.string()
@@ -177,6 +184,7 @@ const UpdatePost = () => {
     gender: Yup.string()
       .required("Vui lòng chọn trường này")
       .oneOf(["Đực", "Cái"], "Vui lòng chọn trường này"),
+    genre: Yup.string().required("Vui lòng chọn trường này"),
     weight: Yup.number()
       .required("Vui lòng chọn trường này")
       .positive("Cân nặng phải là một số dương"),
@@ -228,6 +236,7 @@ const UpdatePost = () => {
                 species: postInfo.species,
                 quantity: postInfo.quantity,
                 gender: postInfo.gender,
+                genre: postInfo.genre,
                 price: postInfo.price,
                 weight: postInfo.weight,
                 age: postInfo.age,
@@ -269,34 +278,71 @@ const UpdatePost = () => {
                     )}
                   </Field>
 
-                  <Field name="species">
-                    {({ field, form }) => (
-                      <FormControl
-                        isRequired
-                        isInvalid={form.errors.species && form.touched.species}
-                        mb={"4"}
-                      >
-                        <FormLabel>Loại thú cưng</FormLabel>
-                        <Select
-                          defaultValue={`${postInfo.species}`}
-                          onChange={(e) =>
-                            form.setValues({
-                              ...form.values,
-                              species: e.target.value,
-                            })
-                          }
-                        >
-                          <option value={"Mèo"}>Mèo</option>
-                          <option value={"Chó"}>Chó</option>
-                          <option value={"Chuột Hamster"}>Chuột Hamster</option>
-                          <option value={"Khác"}>Thú cưng khác</option>
-                        </Select>
-                        <FormErrorMessage>
-                          {form.errors.species}
-                        </FormErrorMessage>
-                      </FormControl>
-                    )}
-                  </Field>
+                  <Grid templateColumns={"repeat(2, 1fr)"} gap={4}>
+                    <GridItem>
+                      <Field name="species">
+                        {({ field, form }) => (
+                          <FormControl
+                            isRequired
+                            isInvalid={form.errors.species && form.touched.species}
+                            mb={"4"}
+                          >
+                            <FormLabel>Loài</FormLabel>
+                            <Select
+                              defaultValue={`${postInfo.species}`}
+                              placeholder='Chọn loài'
+                              onChange={(e) => {
+                                handleSpeciesChange(e);
+                                form.setValues({
+                                  ...form.values,
+                                  species: e.target.value,
+                                });
+                              }}
+                            >
+                              {/* <option value={''} disabled hidden selected >Xin mời chọn</option> */}
+                              {speciesGenre.map((s) => (
+                                <option key={s.Id} value={s.Name}>
+                                  {s.Name}
+                                </option>
+                              ))}
+                            </Select>
+                            <FormErrorMessage>{form.errors.species}</FormErrorMessage>
+                          </FormControl>
+                        )}
+                      </Field>
+                    </GridItem>
+                    <GridItem>
+                      <Field name="genre">
+                        {({ field, form }) => (
+                          <FormControl
+                            isRequired
+                            isInvalid={form.errors.genre && form.touched.genre}
+                            mb={"4"}
+                          >
+                            <FormLabel>Giống</FormLabel>
+                            <Select
+                              defaultValue={`${postInfo.genre}`}
+                              placeholder='Chọn giống'
+                              onChange={(e) => {
+                                form.setValues({
+                                  ...form.values,
+                                  genre: e.target.value,
+                                })
+                              }}
+                            >
+                              {/* <option value={''} disabled hidden selected >Xin mời chọn</option> */}
+                              {genre.map((g) => (
+                                <option key={g.Id} value={g.Name}>
+                                  {g.Name}
+                                </option>
+                              ))}
+                            </Select>
+                            <FormErrorMessage>{form.errors.species}</FormErrorMessage>
+                          </FormControl>
+                        )}
+                      </Field>
+                    </GridItem>
+                  </Grid>
 
                   <Field name="quantity">
                     {({ field, form }) => (
