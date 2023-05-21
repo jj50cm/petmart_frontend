@@ -11,6 +11,9 @@ import {
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import "./ChatSingleUser.css";
+import { useDispatch } from "react-redux";
+import { setIsStartChat } from "../../../redux/slices/chat";
+import { getChatMessages } from "../../../redux/actions/chatAction";
 
 const roleMap = {
   admin: "admin",
@@ -18,9 +21,14 @@ const roleMap = {
   buyer: "người mua",
 };
 
-const ChatSingleUser = ({ user, startChat }) => {
+const ChatSingleUser = ({ user, lastMess }) => {
   const styleActive = ({ isActive }) => (isActive ? "active" : "");
+  const dispatch = useDispatch();
 
+  const startChat = () => {
+    dispatch(setIsStartChat(true));
+    dispatch(getChatMessages(user.id));
+  };
   return (
     <NavLink
       to={`${user.id}`}
@@ -36,13 +44,14 @@ const ChatSingleUser = ({ user, startChat }) => {
           bgColor: "gray.100",
         }}
         borderRadius={6}
+        // justifyContent={"center"}
       >
-        <Tooltip label={user.name}>
+        <Tooltip label={user.username}>
           <Avatar src="https://bit.ly/broken-link" />
         </Tooltip>
         <Flex flexDirection={"column"} display={{ base: "none", sm: "flex" }}>
-          <Heading fontSize={"md"}>{user.name}</Heading>
-          <Text>{roleMap[user.role]}</Text>
+          <Heading fontSize={"md"}>{user.username}</Heading>
+          <Text>{lastMess}</Text>
         </Flex>
       </Flex>
     </NavLink>

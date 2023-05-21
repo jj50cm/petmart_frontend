@@ -68,6 +68,7 @@ const AdminPostDetail = () => {
         isClosable: true,
         position: "top",
       });
+      dispatch(getPostById(params.id));
     }
   };
   return (

@@ -99,7 +99,7 @@ export default function NotificationButton() {
           position="absolute"
           top="100%"
           right="0"
-          zIndex="1"
+          zIndex="2"
           bg="white"
           boxShadow="xl"
           p={3}

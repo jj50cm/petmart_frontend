@@ -11,6 +11,7 @@ import {
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 const userList = [
   {
     id: 1,
@@ -114,12 +115,22 @@ const userList = [
   },
 ];
 const ChatHeader = () => {
-  const [user, setUser] = useState(null);
+  const [userName, setUserName] = useState("");
   const { userId } = useParams();
+  const { chatList } = useSelector((state) => state.chat);
 
+  const findUsernameByIdInThread = (threads, userId) => {
+    for (const thread of threads) {
+      const recipient = thread.recipients.find((r) => r.id === userId);
+      if (recipient) {
+        return recipient.username;
+      }
+    }
+    return null;
+  };
   useEffect(() => {
-    const res = userList.find((user) => user.id.toString() === userId);
-    setUser(res);
+    const username = findUsernameByIdInThread(chatList, userId);
+    setUserName(username);
   }, [userId]);
   return (
     <Box
@@ -134,10 +145,7 @@ const ChatHeader = () => {
         <Avatar boxSize={10} src="https://bit.ly/broken-link" />
         <Flex flexDirection={"column"}>
           <Text fontWeight={"600"} fontSize={"16px"}>
-            {user && user.name}
-          </Text>
-          <Text fontSize={"14px"} color={"gray.500"}>
-            Active 10m ago.
+            {userName}
           </Text>
         </Flex>
       </Flex>

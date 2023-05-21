@@ -1,19 +1,16 @@
 import axios from "axios";
 import {
+  setChatList,
+  setChatMessages,
   setError,
   setLoading,
-  setNotifications,
-  setNumOfNewNotifications,
-} from "../slices/notification";
-import { useSelector } from "react-redux";
+} from "../slices/chat";
 
-export const getNotifications = () => async (dispatch, getState) => {
-  dispatch(setLoading());
-
+export const getChatData = () => async (dispatch, getState) => {
+  dispatch(setLoading(true));
   const {
     user: { userInfo },
   } = getState((state) => state.user);
-
   try {
     const config = {
       headers: {
@@ -21,20 +18,18 @@ export const getNotifications = () => async (dispatch, getState) => {
         "Content-Type": "application/json",
       },
     };
+    const body = {
+      userData: {
+        userId: "644253d1f1c989b08f76d47b",
+      },
+    };
     const { data } = await axios.get(
-      `${import.meta.env.VITE_BASE_URL}/api/users/notifications`,
-      config
+      `${import.meta.env.VITE_BASE_URL}/api/chat`,
+      config,
+      body
     );
-    const { notifications } = data;
-    // console.log(notifications);
-    // loc ra nhung thong bao moi
-    const numOfNewNotifications = notifications.filter(
-      (notification) => !notification.seen
-    ).length;
-
-    dispatch(setNotifications(notifications));
-    dispatch(setNumOfNewNotifications(numOfNewNotifications));
-    console.log("lấy các thông báo");
+    dispatch(setChatList(data.threads));
+    console.log("Lay ds chat");
   } catch (error) {
     dispatch(
       setError(
@@ -47,20 +42,30 @@ export const getNotifications = () => async (dispatch, getState) => {
     );
   }
 };
-export const seenNotification = (id) => async (dispatch) => {
-  dispatch(setLoading());
+export const getChatMessages = (id) => async (dispatch, getState) => {
+  dispatch(setLoading(true));
+  const {
+    user: { userInfo },
+  } = getState((state) => state.user);
   try {
     const config = {
       headers: {
+        Authorization: `Bearer ${userInfo.accessToken}`,
         "Content-Type": "application/json",
       },
     };
-    const { data } = await axios.patch(
-      `${import.meta.env.VITE_BASE_URL}/api/notifications/seen`,
-      { notiId: id },
-      config
+    const body = {
+      userData: {
+        userId: "644253d1f1c989b08f76d47b",
+      },
+    };
+    const { data } = await axios.get(
+      `${import.meta.env.VITE_BASE_URL}/api/chat/${id}`,
+      config,
+      body
     );
-    console.log("xem thông báo");
+    dispatch(setChatMessages(data.thread.messages));
+    console.log("Lay ds tin nhan");
   } catch (error) {
     dispatch(
       setError(

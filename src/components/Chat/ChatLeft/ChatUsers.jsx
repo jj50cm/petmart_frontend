@@ -3,7 +3,7 @@ import React from "react";
 import ChatUserSearch from "./ChatUserSearch";
 import ChatUserList from "./ChatUserList";
 
-const ChatUsers = ({ startChat }) => {
+const ChatUsers = () => {
   return (
     <Box
       flexBasis={"25%"}
@@ -14,7 +14,7 @@ const ChatUsers = ({ startChat }) => {
       <Flex flexDirection={"column"} gap={6} height={"100%"}>
         <Heading fontSize={"24px"}>Chats</Heading>
         <ChatUserSearch />
-        <ChatUserList startChat={startChat} />
+        <ChatUserList />
       </Flex>
     </Box>
   );
