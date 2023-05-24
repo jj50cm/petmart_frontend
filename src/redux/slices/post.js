@@ -17,14 +17,22 @@ export const initialState = {
   createdPostList: null,
   favouritePostList: null,
   postForNotification: null,
+  updateLoading: false,
+  updateError: null,
 };
 
 export const postSlice = createSlice({
   name: "post",
   initialState,
   reducers: {
-    setLoading: (state) => {
-      state.loading = true;
+    setLoading: (state, { payload }) => {
+      state.loading = payload;
+    },
+    setUpdateLoading: (state, { payload }) => {
+      state.updateLoading = payload;
+    },
+    setUpdateError: (state, { payload }) => {
+      state.updateError = payload;
     },
     setPostList: (state, { payload }) => {
       state.postList = payload;
@@ -121,6 +129,8 @@ export const {
   setCreatedPostList,
   setFavouritePostList,
   setPostForNotification,
+  setUpdateError,
+  setUpdateLoading,
 } = postSlice.actions;
 
 export default postSlice.reducer;

@@ -23,18 +23,17 @@ import {
 import { AddIcon, CopyIcon, SmallCloseIcon } from "@chakra-ui/icons";
 import bytesToSize from "../../utils/byteToSize";
 
-function FilesDropzone({ className, onUploaded, ...rest }) {
+function FilesDropzone({ className, onUploaded, defaultFiles, ...rest }) {
   const toast = useToast();
-  const [files, setFiles] = useState([]);
+  const [files, setFiles] = useState(defaultFiles);
 
   const handleDrop = useCallback((acceptedFiles) => {
-    setFiles(
-      acceptedFiles.map((file) =>
-        Object.assign(file, {
-          preview: URL.createObjectURL(file),
-        })
-      )
+    const newFiles = acceptedFiles.map((file) =>
+      Object.assign(file, {
+        preview: URL.createObjectURL(file),
+      })
     );
+    setFiles((prevFiles) => prevFiles.concat(newFiles));
   }, []);
 
   const handleRemoveAll = () => {
@@ -103,7 +102,15 @@ function FilesDropzone({ className, onUploaded, ...rest }) {
               {files.map((file, i) => (
                 <ListItem key={i}>
                   {/* <Image boxSize={'200px'} src={}/> */}
-                  <Grid templateColumns={"repeat(3, 1fr)"} gap={"4"}>
+                  <Grid templateColumns={"repeat(4, 1fr)"} gap={"4"}>
+                    <GridItem>
+                      <Image
+                        boxSize={"100px"}
+                        objectFit={"cover"}
+                        src={file.preview}
+                        alt={file.name}
+                      />
+                    </GridItem>
                     <GridItem>
                       <Text>{file.name}</Text>
                     </GridItem>
@@ -150,6 +157,7 @@ function FilesDropzone({ className, onUploaded, ...rest }) {
 FilesDropzone.propTypes = {
   className: PropTypes.string,
   onUploaded: PropTypes.func.isRequired,
+  defaultFiles: PropTypes.array,
 };
 
 export default FilesDropzone;

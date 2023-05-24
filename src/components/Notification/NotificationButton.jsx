@@ -24,6 +24,7 @@ export default function NotificationButton() {
   const { numOfNewNotifications, error } = useSelector(
     (state) => state.notification
   );
+  const { userInfo } = useSelector((state) => state.user);
 
   const toast = useToast();
   const navigate = useNavigate();
@@ -41,6 +42,9 @@ export default function NotificationButton() {
   };
 
   useEffect(() => {
+    if (!userInfo) {
+      return;
+    }
     dispatch(getNotifications());
   }, []);
 

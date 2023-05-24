@@ -23,6 +23,7 @@ import {
   NumberDecrementStepper,
   Textarea,
   FormHelperText,
+  useToast,
 } from "@chakra-ui/react";
 import {
   Modal,
@@ -46,15 +47,21 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import FilesDropzone from "../components/Posts/FilesDropzone";
-import { getPostById } from "../redux/actions/postActions";
+import { editPost, getPostById } from "../redux/actions/postActions";
+import { speciesGenre } from "./gen";
+import { setUpdateLoading } from "../redux/slices/post";
 
 const UpdatePost = () => {
   const [province, setProvince] = useState([]);
   const [district, setDistrict] = useState([]);
   const [commune, setCommune] = useState([]);
+  const [genre, setGenre] = useState([]);
+  const [files, setFiles] = useState([]);
   const [endDatee, setEndDatee] = useState(moment().add(7, "days").toDate());
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
 
+  const { id: postId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   // lấy post
@@ -68,7 +75,7 @@ const UpdatePost = () => {
 
   // tạo các đối tượng
   const { userInfo } = user;
-  const { loading, error, singlePost } = post;
+  const { loading, error, singlePost, updateLoading, updateError } = post;
 
   useEffect(() => {
     // load tên tỉnh thành vào province
@@ -80,12 +87,34 @@ const UpdatePost = () => {
     };
     fetchProvince();
     console.log("lấy tỉnh");
-    // dispatch(getPostById(id));
+    dispatch(getPostById(id));
+
+    if (singlePost) {
+      console.log(singlePost);
+      images = singlePost.post.images;
+      for (let i = 0; i < images.length; i++) {
+        let substring = images[i].split("/");
+        let name = substring[substring.length - 1];
+        fetch(images[i])
+          .then((res) => res.blob())
+          .then((blob) => {
+            let objectURL = URL.createObjectURL(blob);
+            let file = new File([blob], name, { type: blob.type });
+            file.preview = objectURL;
+            defaultFiles.push(file);
+            setFiles((prevFiles) => {
+              return prevFiles.concat(file);
+            });
+          });
+        console.log(defaultFiles);
+      }
+    }
   }, []);
 
   let postInfo = null;
   let author = null;
   let images = [];
+  let defaultFiles = [];
 
   if (singlePost) {
     postInfo = singlePost.post;
@@ -98,36 +127,28 @@ const UpdatePost = () => {
     let defaultProvince = singlePost.post.province;
     let defaultDistrict = singlePost.post.district;
     let defaultEndDate = singlePost.post.endDate;
-    let defaultDate = moment().add(7, "days").toDate(); // d
+    let defaultDate = moment().add(7, "days").toDate();
 
     let sampleProvince = province.find((p) => p.Name === defaultProvince);
+    let defaultGenre = speciesGenre.find((s) => s.Name === postInfo.species);
 
     if (district.length == 0 && sampleProvince != undefined) {
       setDistrict(sampleProvince.Districts);
       let sampleDistrict = sampleProvince.Districts.find(
         (d) => d.Name === defaultDistrict
       );
-      console.log(sampleDistrict);
       if (commune.length == 0) {
         setCommune(sampleDistrict.Wards);
       }
     }
 
-    // endDate
-    // if (
-    //   endDatee.getDate() == defaultDate.getDate() &&
-    //   endDatee.getMonth() == defaultDate.getMonth() &&
-    //   endDatee.getYear() == defaultDate.getYear()
-    // ) {
-    //   let dateObject = new Date(defaultEndDate);
-    //   console.log(dateObject);
-    //   setEndDatee(dateObject);
-    // }
+    if (genre && defaultGenre != undefined && genre.length == 0) {
+      setGenre(defaultGenre.Genre);
+    }
   }
 
   const handleProvinceChange = (e, defaultProvince) => {
     const provinceName = e.target.value;
-    console.log(provinceName);
     const result = province.find((c) => c.Name === provinceName);
     setDistrict(result.Districts);
     setCommune([]);
@@ -148,17 +169,24 @@ const UpdatePost = () => {
     setEndDatee(date);
   };
 
+  const handleSpeciesChange = (e) => {
+    const speciesName = e.target.value;
+    const result = speciesGenre.find((s) => s.Name === speciesName);
+    setGenre(result.Genre);
+  };
+
   const validationSchema = Yup.object().shape({
     title: Yup.string().required("Vui lòng nhập tiêu đề cho bài viết"),
     species: Yup.string()
       .required("Vui lòng chọn trường này")
       .oneOf(
-        ["Chó", "Mèo", "Chuột Hamster", "Khác"],
+        ["Chó", "Mèo", "Chim", "Gà", "Chuột Hamster", "Khác"],
         "Vui lòng chọn trường này"
       ),
     gender: Yup.string()
       .required("Vui lòng chọn trường này")
       .oneOf(["Đực", "Cái"], "Vui lòng chọn trường này"),
+    genre: Yup.string().required("Vui lòng chọn trường này"),
     weight: Yup.number()
       .required("Vui lòng chọn trường này")
       .positive("Cân nặng phải là một số dương"),
@@ -181,7 +209,30 @@ const UpdatePost = () => {
       .min(3, "Upload tối thiểu 3 ảnh, vui lòng tải lại tối thiểu 3 ảnh")
       .required("Vui lòng đăng ảnh minh họa"),
   });
-  //   return <div>Hello</div>;
+
+  const handleSubmit = (values) => {
+    dispatch(editPost(postId, values));
+    if (!updateLoading) {
+      toast({
+        description: "Sửa bài thành công",
+        status: "success",
+        position: "top",
+        isClosable: true,
+      });
+    }
+    navigate(`/posts/${postId}`);
+  };
+
+  useEffect(() => {
+    if (error) {
+      toast({
+        description: error,
+        status: "error",
+        position: "top",
+        isClosable: true,
+      });
+    }
+  }, [updateError, updateLoading]);
 
   return (
     <>
@@ -210,6 +261,7 @@ const UpdatePost = () => {
                 species: postInfo.species,
                 quantity: postInfo.quantity,
                 gender: postInfo.gender,
+                genre: postInfo.genre,
                 price: postInfo.price,
                 weight: postInfo.weight,
                 age: postInfo.age,
@@ -222,7 +274,7 @@ const UpdatePost = () => {
                 values,
                 { setErrors, setStatus, setSubmitting }
               ) => {
-                console.log(values);
+                handleSubmit(values);
               }}
               validationSchema={validationSchema}
             >
@@ -251,34 +303,77 @@ const UpdatePost = () => {
                     )}
                   </Field>
 
-                  <Field name="species">
-                    {({ field, form }) => (
-                      <FormControl
-                        isRequired
-                        isInvalid={form.errors.species && form.touched.species}
-                        mb={"4"}
-                      >
-                        <FormLabel>Loại thú cưng</FormLabel>
-                        <Select
-                          defaultValue={`${postInfo.species}`}
-                          onChange={(e) =>
-                            form.setValues({
-                              ...form.values,
-                              species: e.target.value,
-                            })
-                          }
-                        >
-                          <option value={"Mèo"}>Mèo</option>
-                          <option value={"Chó"}>Chó</option>
-                          <option value={"Chuột Hamster"}>Chuột Hamster</option>
-                          <option value={"Khác"}>Thú cưng khác</option>
-                        </Select>
-                        <FormErrorMessage>
-                          {form.errors.species}
-                        </FormErrorMessage>
-                      </FormControl>
-                    )}
-                  </Field>
+                  <Grid templateColumns={"repeat(2, 1fr)"} gap={4}>
+                    <GridItem>
+                      <Field name="species">
+                        {({ field, form }) => (
+                          <FormControl
+                            isRequired
+                            isInvalid={
+                              form.errors.species && form.touched.species
+                            }
+                            mb={"4"}
+                          >
+                            <FormLabel>Loài</FormLabel>
+                            <Select
+                              defaultValue={`${postInfo.species}`}
+                              placeholder="Chọn loài"
+                              onChange={(e) => {
+                                handleSpeciesChange(e);
+                                form.setValues({
+                                  ...form.values,
+                                  species: e.target.value,
+                                });
+                              }}
+                            >
+                              {/* <option value={''} disabled hidden selected >Xin mời chọn</option> */}
+                              {speciesGenre.map((s) => (
+                                <option key={s.Id} value={s.Name}>
+                                  {s.Name}
+                                </option>
+                              ))}
+                            </Select>
+                            <FormErrorMessage>
+                              {form.errors.species}
+                            </FormErrorMessage>
+                          </FormControl>
+                        )}
+                      </Field>
+                    </GridItem>
+                    <GridItem>
+                      <Field name="genre">
+                        {({ field, form }) => (
+                          <FormControl
+                            isRequired
+                            isInvalid={form.errors.genre && form.touched.genre}
+                            mb={"4"}
+                          >
+                            <FormLabel>Giống</FormLabel>
+                            <Select
+                              defaultValue={`${postInfo.genre}`}
+                              placeholder="Chọn giống"
+                              onChange={(e) => {
+                                form.setValues({
+                                  ...form.values,
+                                  genre: e.target.value,
+                                });
+                              }}
+                            >
+                              {/* <option value={''} disabled hidden selected >Xin mời chọn</option> */}
+                              {genre.map((g) => (
+                                <option key={g.Id} value={g.Name}>
+                                  {g.Name}
+                                </option>
+                              ))}
+                            </Select>
+                            <FormErrorMessage>
+                              {form.errors.species}
+                            </FormErrorMessage>
+                          </FormControl>
+                        )}
+                      </Field>
+                    </GridItem>
+                  </Grid>
 
                   <Field name="quantity">
                     {({ field, form }) => (
@@ -520,7 +615,7 @@ const UpdatePost = () => {
                             <FormLabel></FormLabel>
                             <Select
                               placeholder="Chọn tỉnh thành"
-                              defaultValue={`${postInfo.province}`}
+                              //defaultValue={`${postInfo.province}`}
                               onChange={(e) => {
                                 handleProvinceChange(e, postInfo.province);
                                 form.setValues({
@@ -530,7 +625,11 @@ const UpdatePost = () => {
                               }}
                             >
                               {province.map((c) => (
-                                <option key={c.Id} value={c.Name}>
+                                <option
+                                  key={c.Id}
+                                  value={c.Name}
+                                  selected={postInfo.province == c.Name}
+                                >
                                   {c.Name}
                                 </option>
                               ))}
@@ -555,7 +654,7 @@ const UpdatePost = () => {
                             <FormLabel></FormLabel>
                             <Select
                               placeholder="Chọn quận huyện"
-                              defaultValue={`${postInfo.district}`}
+                              //defaultValue={`${postInfo.district}`}
                               onChange={(e) => {
                                 handleDistrictChange(e);
                                 form.setValues({
@@ -565,7 +664,11 @@ const UpdatePost = () => {
                               }}
                             >
                               {district.map((c) => (
-                                <option key={c.Id} value={c.Name}>
+                                <option
+                                  key={c.Id}
+                                  value={c.Name}
+                                  selected={postInfo.district == c.Name}
+                                >
                                   {c.Name}
                                 </option>
                               ))}
@@ -590,7 +693,7 @@ const UpdatePost = () => {
                             <FormLabel></FormLabel>
                             <Select
                               placeholder="Chọn phường xã"
-                              defaultValue={`${postInfo.commune}`}
+                              //defaultValue={`${postInfo.commune}`}
                               onChange={(e) =>
                                 form.setValues({
                                   ...form.values,
@@ -599,7 +702,11 @@ const UpdatePost = () => {
                               }
                             >
                               {commune.map((c) => (
-                                <option key={c.Id} value={c.Name}>
+                                <option
+                                  key={c.Id}
+                                  value={c.Name}
+                                  selected={postInfo.commune == c.Name}
+                                >
                                   {c.Name}
                                 </option>
                               ))}
@@ -674,6 +781,7 @@ const UpdatePost = () => {
                           onUploaded={(e) => {
                             form.setValues({ ...form.values, images: e });
                           }}
+                          defaultFiles={files}
                         />
                         <FormErrorMessage>
                           {form.errors.images}
@@ -718,6 +826,7 @@ const UpdatePost = () => {
 
                       <ModalFooter display={"flex"} justifyContent={"center"}>
                         <Button
+                          isLoading={updateLoading}
                           type="submit"
                           colorScheme="blue"
                           mr={3}

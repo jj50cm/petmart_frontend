@@ -8,6 +8,8 @@ import {
   setUserList,
   setShowUserList,
   setIsApproveAccount,
+  setUpdateLoading,
+  setUpdateError,
 } from "../slices/user";
 
 export const login = (email, password) => async (dispatch) => {
@@ -140,4 +142,39 @@ export const signup = (newUser) => async (dispatch) => {
 export const logout = () => async (dispatch) => {
   localStorage.removeItem("userInfo");
   dispatch(userLogout());
+};
+
+export const updateProfile = (newInfo) => async (dispatch, getState) => {
+  dispatch(setUpdateLoading(true));
+  const {
+    user: { userInfo },
+  } = getState();
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.accessToken}`,
+        "Content-Type": "application/json",
+      },
+    };
+    const {
+      user: { id },
+    } = userInfo;
+    const { data } = await axios.put(
+      `${import.meta.env.VITE_BASE_URL}/api/users/${id}`,
+      newInfo,
+      config
+    );
+    console.log("🚀 ~ update profile user:", data);
+    dispatch(setUpdateLoading(false));
+  } catch (error) {
+    dispatch(
+      setUpdateError(
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+          ? error.message
+          : "An unexpected error has occured. Please try again later."
+      )
+    );
+  }
 };

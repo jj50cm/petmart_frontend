@@ -44,15 +44,15 @@ const PostRatingOverview = () => {
       bgColor={"pink.50"}
       border={"1px solid #f9ede5"}
     >
-      <Flex pl={"12px"} alignItems={"baseline"} gap={"4px"}>
+      <Flex pl={"12px"} alignItems={"center"} gap={"4px"}>
         <Text fontWeight={"600"} fontSize={"20px"} color={"#ee4d2d"}>
           {" "}
           <Text as={"span"} fontSize={"26px"}>
-            {star || 0}
+            {star.toFixed(2) || 0}
           </Text>{" "}
           trên 5
         </Text>
-        <RatingIcon size={8} filled={"yellow.200"} />
+        <RatingIcon size={6} filled={"yellow.200"} />
         {/* <RatingSystem rating={star} /> */}
         {/* filled={"#ee4d2d"} size={6} */}
       </Flex>

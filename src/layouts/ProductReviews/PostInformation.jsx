@@ -29,7 +29,7 @@ const PostInformation = ({ postInfo }) => {
     province,
     description,
   } = postInfo;
-  const place = `${address}, xã ${commune}, huyện ${district}, tỉnh ${province}`;
+  const place = `${address},  ${commune},  ${district},  ${province}`;
   return (
     <Box my={"32px"}>
       <SubTitle>Thông tin chi tiết</SubTitle>
