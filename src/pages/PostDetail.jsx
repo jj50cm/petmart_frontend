@@ -74,7 +74,6 @@ const PostDetail = () => {
   useEffect(() => {
     // console.log(singlePost);
     if (singlePost) {
-      console.log("new post");
       setPostInfo(singlePost.post);
       setCreator(singlePost.creator);
     }
@@ -115,15 +114,17 @@ const PostDetail = () => {
                 {/* Nếu user hiện tại là tác giả bài viết */}
                 {userInfo && userInfo.user.id === creator.id && (
                   <Flex>
-                    <Tooltip label={"Gia hạn bài viết"} placement="top">
-                      <IconButton
-                        variant="outline"
-                        colorScheme="teal"
-                        aria-label="Gia hạn bài đăng"
-                        icon={<CalendarIcon />}
-                        onClick={onOpen}
-                      />
-                    </Tooltip>
+                    {!postInfo.extending && (
+                      <Tooltip label={"Gia hạn bài viết"} placement="top">
+                        <IconButton
+                          variant="outline"
+                          colorScheme="teal"
+                          aria-label="Gia hạn bài đăng"
+                          icon={<CalendarIcon />}
+                          onClick={onOpen}
+                        />
+                      </Tooltip>
+                    )}
                     <Tooltip label={"Chỉnh sửa bài đăng"} placement="top">
                       <Button
                         ml={"10px"}

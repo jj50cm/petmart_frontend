@@ -1,10 +1,11 @@
 import { Button, Flex, HStack, Stack, Text } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import RatingIcon from "../../components/Rating/RatingIcon";
 import RatingSystem from "../../components/Rating/RatingSystem";
 import { useDispatch, useSelector } from "react-redux";
+import { setShowReviewList } from "../../redux/slices/post";
 let initialRatingSelections = [
-  { id: 0, text: "Tất cả", isActive: true },
+  { id: 0, text: "Tất cả", isActive: true, numRating: 4 },
   { id: 5, text: "5 Sao", numRating: 4, isActive: false },
   { id: 4, text: "4 Sao", numRating: 1, isActive: false },
   { id: 3, text: "3 Sao", numRating: 3, isActive: false },
@@ -12,23 +13,34 @@ let initialRatingSelections = [
   { id: 1, text: "1 Sao", numRating: 2, isActive: false },
 ];
 const PostRatingOverview = () => {
+  const [ratingSelections, setRatingSelections] = useState(
+    initialRatingSelections
+  );
   const dispatch = useDispatch();
   const post = useSelector((state) => state.post);
-  const { singlePost } = post;
+  const { singlePost, countRating, reviews, showReviewList } = post;
 
   const {
     post: { star },
   } = singlePost;
-  const [ratingSelections, setRatingSelections] = useState(
-    initialRatingSelections
-  );
+
   const styleBtnActive = {
     backgroundColor: "#fff",
     color: "#ee4d2d",
     borderColor: "#ee4d2d",
   };
+
   const handleClick = (id) => {
     console.log(`click ${id}`);
+    // loc tu reviews ra nhung cai co rating = id (nếu là 0 thì lấy all reviews)
+    const newReviewList = reviews.filter((review) => {
+      if (id === 0) {
+        return true;
+      }
+      return review.rating === id;
+    });
+    dispatch(setShowReviewList(newReviewList));
+
     setRatingSelections((prev) => {
       return prev.map((item) =>
         item.id === id
@@ -37,6 +49,19 @@ const PostRatingOverview = () => {
       );
     });
   };
+
+  useEffect(() => {
+    if (countRating.length > 0) {
+      console.log("countRating", countRating);
+      const newRatingSelection = [...ratingSelections];
+      newRatingSelection[0].numRating = countRating[0];
+      newRatingSelection.forEach((rating) => {
+        rating.numRating = countRating[rating.id];
+      });
+      setRatingSelections(newRatingSelection);
+    }
+  }, [countRating]);
+
   return (
     <Flex
       gap={8}
