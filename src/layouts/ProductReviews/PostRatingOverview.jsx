@@ -31,7 +31,6 @@ const PostRatingOverview = () => {
   };
 
   const handleClick = (id) => {
-    console.log(`click ${id}`);
     // loc tu reviews ra nhung cai co rating = id (nếu là 0 thì lấy all reviews)
     const newReviewList = reviews.filter((review) => {
       if (id === 0) {
@@ -40,7 +39,6 @@ const PostRatingOverview = () => {
       return review.rating === id;
     });
     dispatch(setShowReviewList(newReviewList));
-
     setRatingSelections((prev) => {
       return prev.map((item) =>
         item.id === id
@@ -52,7 +50,6 @@ const PostRatingOverview = () => {
 
   useEffect(() => {
     if (countRating.length > 0) {
-      console.log("countRating", countRating);
       const newRatingSelection = [...ratingSelections];
       newRatingSelection[0].numRating = countRating[0];
       newRatingSelection.forEach((rating) => {
@@ -62,6 +59,10 @@ const PostRatingOverview = () => {
     }
   }, [countRating]);
 
+  // mặc định hiện all đánh giá khi reload
+  useEffect(() => {
+    setRatingSelections(initialRatingSelections);
+  }, []);
   return (
     <Flex
       gap={8}

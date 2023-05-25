@@ -345,6 +345,7 @@ export const getReviews = () => async (dispatch, getState) => {
     countRating[0] = reviews.length;
     dispatch(setCountRating(countRating));
     dispatch(setReviews(reviews));
+
     dispatch(setShowReviewList(reviews));
   } catch (error) {
     console.log("Lỗi khi lấy danh sách đánh giá");
