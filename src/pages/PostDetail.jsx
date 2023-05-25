@@ -112,32 +112,36 @@ const PostDetail = () => {
                   {postInfo.title}
                 </Heading>
                 {/* Nếu user hiện tại là tác giả bài viết */}
-                {userInfo && userInfo.user.id === creator.id && (
-                  <Flex>
-                    {!postInfo.extending && (
-                      <Tooltip label={"Gia hạn bài viết"} placement="top">
-                        <IconButton
-                          variant="outline"
+                {userInfo &&
+                  (userInfo.user.role === "admin" ||
+                    userInfo.user.id === creator.id) && (
+                    <Flex>
+                      {!postInfo.extending && (
+                        <Tooltip label={"Gia hạn bài viết"} placement="top">
+                          <IconButton
+                            variant="outline"
+                            colorScheme="teal"
+                            aria-label="Gia hạn bài đăng"
+                            icon={<CalendarIcon />}
+                            onClick={onOpen}
+                          />
+                        </Tooltip>
+                      )}
+                      <Tooltip label={"Chỉnh sửa bài đăng"} placement="top">
+                        <Button
+                          ml={"10px"}
+                          leftIcon={<EditIcon />}
                           colorScheme="teal"
-                          aria-label="Gia hạn bài đăng"
-                          icon={<CalendarIcon />}
-                          onClick={onOpen}
-                        />
+                          variant={"outline"}
+                          onClick={() =>
+                            navigate(`/posts/update/${postInfo.id}`)
+                          }
+                        >
+                          Chỉnh sửa
+                        </Button>
                       </Tooltip>
-                    )}
-                    <Tooltip label={"Chỉnh sửa bài đăng"} placement="top">
-                      <Button
-                        ml={"10px"}
-                        leftIcon={<EditIcon />}
-                        colorScheme="teal"
-                        variant={"outline"}
-                        onClick={() => navigate(`/posts/update/${postInfo.id}`)}
-                      >
-                        Chỉnh sửa
-                      </Button>
-                    </Tooltip>
-                  </Flex>
-                )}
+                    </Flex>
+                  )}
               </Flex>
               {userInfo && userInfo.user.id === creator.id && (
                 <Flex pt={2} justifyContent={"end"} alignItems={"center"}>
