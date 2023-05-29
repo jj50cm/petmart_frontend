@@ -10,7 +10,7 @@ import {
 import React from "react";
 import RatingSystem from "../Rating/RatingSystem";
 import { formatDate } from "../../utils/formatDate";
-import { ViewIcon } from "@chakra-ui/icons";
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 
 const PostComment = ({ review, toggleView, index, isShow }) => {
   return (
@@ -28,10 +28,17 @@ const PostComment = ({ review, toggleView, index, isShow }) => {
                       Đánh giá này có thể vi phạm tiêu chuẩn cộng đồng. Cân nhắc
                       trước khi xem!
                     </Text>
-                    <ViewIcon
-                      cursor={"pointer"}
-                      onClick={() => toggleView(review.id, index)}
-                    />
+                    {isShow ? (
+                      <ViewOffIcon
+                        cursor={"pointer"}
+                        onClick={() => toggleView(review.id, index)}
+                      />
+                    ) : (
+                      <ViewIcon
+                        cursor={"pointer"}
+                        onClick={() => toggleView(review.id, index)}
+                      />
+                    )}
                   </Flex>
                 )}
               </Flex>

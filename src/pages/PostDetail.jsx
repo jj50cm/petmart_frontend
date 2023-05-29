@@ -172,13 +172,6 @@ const PostDetail = () => {
                       ? `${numOfcomment} comments`
                       : `${numOfcomment} comment`}
                   </Text>
-                  {/* <Divider
-                    orientation="vertical"
-                    height={"20px"}
-                    width={"1px"}
-                    bgColor={"gray.500"}
-                  /> */}
-                  {/* <Text>{postInfo.views} lượt xem</Text> */}
                 </Flex>
                 <Spacer />
                 {/* Yêu thích bài đăng */}
@@ -221,6 +214,7 @@ const PostDetail = () => {
           </Flex>
           <PostInformation postInfo={postInfo} />
           <PostReviews />
+          {/* Modal GIA HẠN BÀI VIẾT */}
           <Modal
             blockScrollOnMount={false}
             isOpen={isOpen}
