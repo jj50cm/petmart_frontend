@@ -43,6 +43,7 @@ function NotificationList({ closeList }) {
       } else {
         navigate(`/posts/${postId}`);
       }
+      closeList();
     }
     if (!seen) {
       dispatch(seenNotification(notiId));
