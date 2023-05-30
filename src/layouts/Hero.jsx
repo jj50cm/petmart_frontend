@@ -18,7 +18,7 @@ const Hero = () => {
           fontSize={{ base: "22px", md: "32px", lg: "48px" }}
           pb={{ base: "4px", md: "24px" }}
         >
-          Chào mừng bạn đến với Pets Shop!
+          Chào mừng bạn đến với Pethub!
         </Heading>
         <Text
           maxW={{ base: "380px", md: "580px", lg: "650px" }}

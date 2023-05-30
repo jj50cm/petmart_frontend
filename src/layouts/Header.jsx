@@ -23,7 +23,7 @@ const Header = () => {
     <Box as={"header"}>
       <Container maxW={"container.xl"}>
         <Flex
-          py={"22px"}
+          py={"20px"}
           px={"30px"}
           width={"100%"}
           flexWrap={"none"}
@@ -32,7 +32,12 @@ const Header = () => {
         >
           <Box _hover={{ cursor: "pointer" }}>
             <Link to={"/"}>
-              <Image src={"./images/logo-petshop.jpg"} />
+              <Image
+                src={"./images/logo-pethub.jpg"}
+                height={"48px"}
+                width={"120px"}
+                objectFit={"cover"}
+              />
             </Link>
           </Box>
 

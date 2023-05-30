@@ -42,7 +42,7 @@ function SinglePost({ post }) {
           ></Image>
         </Link>
         <Flex
-          fontSize={{ base: "12px", md: "12px", lg: "14px", xl: "16px" }}
+          fontSize={{ base: "12px", md: "12px", lg: "14px", xl: "15px" }}
           justifyContent={"space-between"}
           mt={"4px"}
           color={"gray.500"}
