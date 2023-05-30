@@ -40,9 +40,12 @@ const AdminPostTable = ({ tableHeader, posts }) => {
       });
     }
   };
+  const formatStar = (star) => {
+    return star === 0 ? star : star.toFixed(1);
+  };
   return (
     <TableContainer>
-      <Table variant="simple" size={"lg"}>
+      <Table variant="simple" size={"sm"}>
         <Thead>
           <Tr>
             {tableHeader.map((title) => {
@@ -93,7 +96,7 @@ const AdminPostTable = ({ tableHeader, posts }) => {
                     />
                   </Td>
                   <Td>{views}</Td>
-                  <Td>{star}</Td>
+                  <Td>{formatStar(star)}</Td>
 
                   <Td>
                     <HStack spacing={6}>

@@ -26,6 +26,7 @@ const AdminAccountTable = ({ tableHeader, data }) => {
       color: "blue",
     },
   };
+
   return (
     <TableContainer>
       <Table variant="simple" size={"sm"}>

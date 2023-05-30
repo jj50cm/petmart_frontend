@@ -72,12 +72,17 @@ const PostDetail = () => {
   }, []);
 
   useEffect(() => {
-    // console.log(singlePost);
     if (singlePost) {
+      let dateObject = null;
+      if (extendDate == undefined) {
+        dateObject = new Date(singlePost.post.endDate);
+        setExtendDate(dateObject);
+      }
       setPostInfo(singlePost.post);
       setCreator(singlePost.creator);
     }
   }, [singlePost]);
+
   useEffect(() => {
     if (error) {
       toast({
@@ -88,7 +93,6 @@ const PostDetail = () => {
       });
     }
   }, [error]);
-  // console.log(singlePost);
 
   const handleExtendDateChange = (date) => {
     setExtendDate(date);
@@ -143,6 +147,7 @@ const PostDetail = () => {
                     </Flex>
                   )}
               </Flex>
+
               {userInfo && userInfo.user.id === creator.id && (
                 <Flex pt={2} justifyContent={"end"} alignItems={"center"}>
                   <Text
